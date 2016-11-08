@@ -1,0 +1,12 @@
+*~
+.DS_Store
++#IntelliJ
++.idea/
++*.iml
+composer.lock
+vendor/
+local/
+var/cache/*
+node_modules/*
+bower_components/*
+

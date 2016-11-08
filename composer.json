@@ -1,0 +1,40 @@
+{
+    "name": "TANC Home Security",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark Kimsal",
+            "email": "metrofindings@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/metrophp/metrodb.git"
+        },
+		{
+            "type": "vcs",
+            "url": "https://github.com/metrophp/metrodi.git"
+        },
+		{
+            "type": "vcs",
+            "url": "https://github.com/metrophp/metrou.git"
+        },
+		{
+            "type": "vcs",
+            "url": "https://github.com/metrophp/metrofw.git"
+        }
+    ],
+    "require": {
+        "rain/raintpl": ">=3.0.0",
+        "metrodb": ">=1.6.0",
+        "metrofw": ">=1.4.1",
+        "metrou":  ">=0.9.3",
+        "metrophp/metrodi": ">=3.1.3",
+        "filp/whoops": "~1.2@dev"
+    },
+    "config": {
+        "vendor-dir": "local"
+    },
+	"minimum-stability": "stable"
+}
