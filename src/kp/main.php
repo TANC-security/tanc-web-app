@@ -59,9 +59,13 @@ $(document).ready(function() {
 			$beanstalk->delete($job['id']);
 			$job = $beanstalk->reserve(0);
 		}
-		$object = json_decode($lastjob['body']);
-		$response->addTo('items', print_r($object->msg, 1));
 
+		$object = json_decode($lastjob['body']);
+		if (!is_object($object) || ! isset($object->msg)) {
+				$response->addTo('items', "Display         Error");
+		} else {
+				$response->addTo('items', print_r($object->msg, 1));
+		}
 	}
 
 	public function sendAction($request, $response) {
