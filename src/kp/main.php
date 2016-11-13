@@ -23,6 +23,7 @@ $(document).ready(function() {
 	function pollDisplay() {
 	try {
 		$.get(burl+'kp/main/display', function(data) {
+			if (!data.items) { setTimeout(pollDisplay, 2000); return;}
 			var displayMsg   = data.items[0] || '';
 			var line1 = line2 = '';
 			for (i=0; i < 16; i++) {
@@ -35,37 +36,60 @@ $(document).ready(function() {
 			line2 = line2.replace(' ', '&nbsp;');
 
 			$('.kp-view').html(line1+'<br/>'+line2);
-			setTimeout(pollDisplay,3000);
+			setTimeout(pollDisplay,2000);
 		});
 	} catch (e) {
-			setTimeout(pollDisplay,6000);
+			setTimeout(pollDisplay,3000);
 	}
 	}
+	try {
 	pollDisplay();
+	} catch (e) {
+			setTimeout(pollDisplay,3000);
+	}
 });
 		</script>
 ");
 	}
 
+
+	/**
+	 * Read current state from tmpfs
+	 */
 	public function displayAction($response) {
+		$state = file_get_contents('/dev/shm/display.json');
+		$object = json_decode($state);
+		if (!is_object($object) || ! isset($object->msg)) {
+			//$response->addTo('items', "Display         Error");
+			//$response->addTo('usermsg', print_r($lastjob, 1));
+			//$response->addTo('usermsg', print_r($job, 1));
+		} else {
+			$response->addTo('items', print_r($object->msg, 1));
+		}
+
+	}
+
+	public function displayBeanstalkAction($response) {
 		$beanstalk = new Client(['host'=>'127.0.0.1']);
 		$beanstalk->connect();
 		$beanstalk->watch('display');
 
-		$job = $beanstalk->reserve(6);
+		$job = $beanstalk->reserve(2);
 		$lastjob = $job;
 		while ($job) {
 			$lastjob = $job;
 			$beanstalk->delete($job['id']);
 			$job = $beanstalk->reserve(0);
 		}
-
 		$object = json_decode($lastjob['body']);
 		if (!is_object($object) || ! isset($object->msg)) {
-				$response->addTo('items', "Display         Error");
+			//$response->addTo('items', "Display         Error");
+			//$response->addTo('usermsg', print_r($lastjob, 1));
+			//$response->addTo('usermsg', print_r($job, 1));
 		} else {
-				$response->addTo('items', print_r($object->msg, 1));
+			$response->addTo('items', print_r($object->msg, 1));
 		}
+
 	}
 
 	public function sendAction($request, $response) {
