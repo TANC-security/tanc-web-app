@@ -42,7 +42,7 @@ gulp.task('plugins', function() {
 	'./bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.js',
 	SRC+'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js',
 	])
-	.pipe(debug({title: 'unicorn:'}))
+	.pipe(debug({title: 'plugins-js:'}))
       .pipe(concat('plugins.js'))
       .pipe(gulp.dest(DEST+'/js'))
       .pipe(rename({suffix: '.min'}))
@@ -72,18 +72,19 @@ gulp.task('sass-minify', function() {
 
 gulp.task('plugins-css', function() {
     return gulp.src([
-	SRC+'vendors/bootstrap/dist/css/bootstrap.min.css',
-	SRC+'vendors/font-awesome/css/font-awesome.min.css',
-	SRC+'vendors/iCheck/skins/flat/green.css',
-	])
-	.pipe(debug({title: 'unicorn:'}))
+      SRC+'vendors/bootstrap/dist/css/bootstrap.min.css',
+      SRC+'vendors/font-awesome/css/font-awesome.min.css',
+      SRC+'vendors/iCheck/skins/flat/green.css',
+      SRC+'vendors/animate.css/animate.css',
+   ])
+  .pipe(debug({title: 'plugins-css:'}))
       .pipe(concat('plugins-css.css'))
       .pipe(gulp.dest(DEST+'/css'));
-	  /*
+    /*
       .pipe(rename({suffix: '.min'}))
       .pipe(uglify())
       .pipe(gulp.dest(DEST+'/css'));
-	  */
+    */
 });
 
 
