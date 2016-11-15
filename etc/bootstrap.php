@@ -22,7 +22,7 @@ _iCanHandle('output',    'metrofw/template.php', 3);
 #raintpl
 _iCanHandle('template.main',    'template/rain.php::template', 3);
 
-_iCanHandle('exception', 'metrofw/exdump.php::onException');
+#_iCanHandle('exception', 'metrofw/exdump.php::onException');
 _iCanHandle('hangup',    'metrofw/output.php');
 
 _didef('request',        'metrofw/request.php');
@@ -39,15 +39,15 @@ _didef('dataitem', 'metrodb/dataitem.php');
 
 //metrou
 #_iCanHandle('authenticate', 'metrou/authenticator.php');
-#_iCanHandle('authorize',    'metrou/authorizer.php::requireLogin');
+_iCanHandle('authorize',    'metrou/authorizer.php::requireLogin');
 
 //events
-#_iCanHandle('access.denied',        'metrou/login.php::accessDenied');
+_iCanHandle('access.denied',        'metrou/login.php::accessDenied');
 #_iCanHandle('authenticate.success', 'metrou/login.php::authSuccess');
 #_iCanHandle('authenticate.failure', 'metrou/login.php::authFailure');
 
 //things
-#_didef('user',           'metrou/user.php');
+_didef('user',           'metrou/user.php');
 #_didef('session',        'metrou/sessiondb.php');
 //end metrou
 
