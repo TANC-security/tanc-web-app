@@ -26,12 +26,17 @@
         }
     ],
     "require": {
-        "rain/raintpl": ">=3.0.0",
         "metrodb": ">=3.1.3",
-        "metrofw": ">=1.4.1",
+        "metrofw": ">=2.1.0",
         "metrou":  ">=0.9.3",
         "metrophp/metrodi": ">=3.1.3",
-        "filp/whoops": "~1.2@dev"
+        "filp/whoops": "~1.2@dev",
+        "zendframework/zend-form": "^2.9",
+        "zendframework/zend-i18n": "^2.7",
+        "zendframework/zend-view": "^2.8",
+        "zendframework/zend-servicemanager": "^3.2",
+        "zendframework/zend-escaper": "^2.5",
+        "zordius/lightncandy": "dev-master"
     },
     "config": {
         "vendor-dir": "local"
