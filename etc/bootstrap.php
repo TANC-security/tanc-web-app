@@ -20,9 +20,18 @@ _iCanHandle('output',    'metrofw/output.php');
 _iCanHandle('output',    'metrofw/template.php', 3);
 
 #raintpl
-_iCanHandle('template.main',    'template/rain.php::template', 3);
+#_iCanHandle('template.main',    'template/rain.php::template', 3);
+#_iCanHandle('template.main',    'template/rain.php::template', 3);
+_connect('template',          'template/lightncandy.php::template', 3);
+_connect('template.main',     'template/lightncandy.php::template', 3);
+
+
 
 #_iCanHandle('exception', 'metrofw/exdump.php::onException');
+if (_get('env') == 'dev') {
+	_connect('exception', 'main/whoopsexception.php');
+}
+
 _iCanHandle('hangup',    'metrofw/output.php');
 
 _didef('request',        'metrofw/request.php');
@@ -34,20 +43,28 @@ _didef('loggerService',  (object)array());
 
 //metrodb
 _didef('dataitem', 'metrodb/dataitem.php');
-#Metrodb_Connector::setDsn('default', 'mysql://root:mysql@127.0.0.1:3306/metrodb_test');
+Metrodb_Connector::setDsn('default', 'sqlite3://root:mysql@127.0.0.1:3306/var/db/tanc.db');
 //end metrodb
 
 //metrou
-#_iCanHandle('authenticate', 'metrou/authenticator.php');
-_iCanHandle('authorize',    'metrou/authorizer.php::requireLogin');
+_connect('authenticate', 'metrou/authenticator.php');
+//Users
+_didef('authorizer', 'metrou/authorizer.php',
+   	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime')
+);
+_connect('authorize', _make('authorizer'));
+
 
 //events
-_iCanHandle('access.denied',        'metrou/login.php::accessDenied');
+#_iCanHandle('access.denied',        'metrou/accessDenied.php::accessDenied');
+ _connect('access.denied',           'main/accessDenied.php::accessDenied');
 #_iCanHandle('authenticate.success', 'metrou/login.php::authSuccess');
 #_iCanHandle('authenticate.failure', 'metrou/login.php::authFailure');
 
 //things
 _didef('user',           'metrou/user.php');
+_didef('session',        'metrou/sessionsimple.php');
+session_save_path('var/sess/');
 #_didef('session',        'metrou/sessiondb.php');
 //end metrou
 
