@@ -54,9 +54,11 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a href="<?php echo m_appurl();?>"><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="<?php echo m_appurl();?>"><i class="fa fa-home"></i> Home </a>
                   </li>
-                  <li><a href="<?php echo m_appurl('kp');?>"><i class="fa fa-table"></i> Keypad <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="<?php echo m_appurl('kp');?>"><i class="fa fa-table"></i> Keypad </a>
+                  </li>
+                  <li><a href="<?php echo m_appurl('update');?>"><i class="fa fa-gears"></i> Update </a>
                   </li>
                 </ul>
               </div>
