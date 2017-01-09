@@ -212,6 +212,8 @@
     <!-- jQuery -->
     <!-- Bootstrap -->
     <script src="<?php echo m_turl();?>js/plugins.js"></script>
+
+    <script src="<?php echo m_turl();?>scripts/healthcheck.js"></script>
     <!-- FastClick -->
 	<!--
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
