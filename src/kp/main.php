@@ -57,9 +57,10 @@ $(document).ready(function() {
 	 * Read current state from tmpfs
 	 */
 	public function displayAction($response) {
-		$state = file_get_contents('/dev/shm/display.json');
+		$state = @file_get_contents('/dev/shm/display.json');
 		$object = json_decode($state);
 		if (!is_object($object) || ! isset($object->msg)) {
+			$response->statusCode = 500;
 			//$response->addTo('items', "Display         Error");
 			//$response->addTo('usermsg', print_r($lastjob, 1));
 			//$response->addTo('usermsg', print_r($job, 1));
