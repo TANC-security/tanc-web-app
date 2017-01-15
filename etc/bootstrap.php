@@ -64,7 +64,7 @@ _connect('authorize', _make('authorizer'));
 //things
 _didef('user',           'metrou/user.php');
 _didef('session',        'metrou/sessionsimple.php');
-session_save_path('var/sess/');
+session_save_path('./var/sess');
 #_didef('session',        'metrou/sessiondb.php');
 //end metrou
 
