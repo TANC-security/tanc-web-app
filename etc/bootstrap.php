@@ -56,10 +56,10 @@ _connect('authorize', _make('authorizer'));
 
 
 //events
-#_iCanHandle('access.denied',        'metrou/accessDenied.php::accessDenied');
- _connect('access.denied',           'main/accessDenied.php::accessDenied');
-#_iCanHandle('authenticate.success', 'metrou/login.php::authSuccess');
-#_iCanHandle('authenticate.failure', 'metrou/login.php::authFailure');
+#_connect('access.denied',        'metrou/accessDenied.php::accessDenied');
+_connect('access.denied',           'main/accessDenied.php::accessDenied');
+_connect('authenticate.success', 'metrou/login.php::authSuccess');
+_connect('authenticate.failure', 'metrou/login.php::authFailure');
 
 //things
 _didef('user',           'metrou/user.php');
