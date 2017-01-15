@@ -187,7 +187,7 @@
           <div class="row tile_count">
           </div>
           <!-- /top tiles -->
-
+          <?php echo Metrofw_Template::parseSection('sparkmsg'); ?>
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
 			<?php echo Metrofw_Template::parseSection('main'); ?>
