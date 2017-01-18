@@ -14,16 +14,19 @@ class Main_Health {
 			$ready = $this->peekBeanstalk();
 		} catch (\Exception $e) {
 			$ready = FALSE;
+			$response->addInto('user-message', ['msg'=>'Cannot communicate with message queue.', 'type'=>'error']);
+			return;
 		}
 		if (!$ready) {
-			$response->addInto('user-message', ['msg'=>'cannot communicate with message queue', 'type'=>'error']);
+			$response->addInto('user-message', ['msg'=>'Trouble with message queue.', 'type'=>'error']);
 		}
 	}
+
 
 	public function peekBeanstalk() {
 		$beanstalk = new Client(['host'=>'127.0.0.1']);
 		$beanstalk->connect();
 		$beanstalk->watch('display');
-		return $beanstalk->peakReady();
+		return $beanstalk->peekReady();
 	}
 }
