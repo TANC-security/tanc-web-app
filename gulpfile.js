@@ -1,3 +1,4 @@
+require('es6-promise').polyfill();
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
@@ -52,8 +53,8 @@ gulp.task('plugins', function() {
 });
 
 
-
 // TODO: Maybe we can simplify how sass compile the minify and unminify version
+ /*
 var compileSASS = function (filename, options) {
   return sass(SRC+'src/scss/*.scss', options)
         .pipe(autoprefixer('last 2 versions', '> 5%'))
@@ -61,7 +62,16 @@ var compileSASS = function (filename, options) {
         .pipe(gulp.dest(DEST+'/css'))
         .pipe(browserSync.stream());
 };
+*/
 
+var compileSASS = function (filename, options) {
+  return gulp.src([SRC+'src/scss/*.scss', DEST+'/scss/tanc.scss'])
+	  	.pipe(sass(options))
+        .pipe(autoprefixer('last 2 versions', '> 5%'))
+        .pipe(concat(filename))
+        .pipe(gulp.dest(DEST+'/css'))
+        .pipe(browserSync.stream());
+};
 gulp.task('sass', function() {
     return compileSASS('custom.css', {});
 });
@@ -72,7 +82,7 @@ gulp.task('sass-minify', function() {
 
 gulp.task('plugins-css', function() {
     return gulp.src([
-      SRC+'vendors/bootstrap/dist/css/bootstrap.min.css',
+      SRC+'vendors/bootstrap/dist/css/bootstrap.css',
       SRC+'vendors/font-awesome/css/font-awesome.min.css',
       SRC+'vendors/iCheck/skins/flat/green.css',
       SRC+'vendors/animate.css/animate.css',
