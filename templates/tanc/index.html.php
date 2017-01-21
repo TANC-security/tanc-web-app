@@ -265,6 +265,7 @@
 
     <!-- Custom Theme Scripts -->
     <script src="<?php echo m_turl();?>js/custom.min.js"></script>
+    <script src="<?php echo m_turl();?>scripts/form.js"></script>
 
 	<?php echo Metrofw_Template::parseSection('extraJs'); ?>
   </body>

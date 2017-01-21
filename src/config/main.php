@@ -1,8 +1,8 @@
 <?php
 class Config_Main {
 
-
 	public $iface = 'wlan0';
+
 	/**
 	 * Show a list of wifi APs
 	 * Show a template
@@ -40,6 +40,17 @@ class Config_Main {
 			$wifiApList[] = $wifiAp;
 		}
 		$response->wifiApList = $wifiApList;
+		$response->addTo('extrajs', 'scripts/pages/wificonfig.js');
+		$response->updateUrl = m_appurl('config/main/update');
+	}
+
+	public function updateAction($request, $response) {
+		$pwd     = $request->cleanString('psk');
+		$address = $request->cleanString('address');
+		$ssid    = $request->cleanString('ssid');
+		$response->psk     = $pwd;
+		$response->address = $address;
+		$response->ssid    = $ssid;
 	}
 
 	public function findConnectedAp() {
