@@ -68,7 +68,7 @@ class Template_Lightncandy {
 								_make('templatehelper_'.$class);
 							}
 							$cx['helpers'][$name]       = $name;
-							$resolved[$name] = $name;
+							$resolved[$name]            = $name;
 							return $name; //array($class, $fun);
 						},
 						'renderex' => "	if (isset(\$options['helperresolver']) ) {  \$cx['helperresolver'] = \$options['helperresolver'];}",
@@ -112,5 +112,4 @@ echo "</pre>";
 		}
 		return;
 	}
-
 }
