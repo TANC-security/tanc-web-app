@@ -17,9 +17,11 @@ class Main_Health {
 			$response->addInto('user-message', ['msg'=>'Cannot communicate with message queue.', 'type'=>'error']);
 			return;
 		}
+/*
 		if (!$ready) {
 			$response->addInto('user-message', ['msg'=>'Trouble with message queue.', 'type'=>'error']);
 		}
+*/
 	}
 
 
