@@ -40,7 +40,7 @@ class Config_Main {
 			$wifiApList[] = $wifiAp;
 		}
 		$response->wifiApList = $wifiApList;
-		$response->addTo('extrajs', 'scripts/pages/wificonfig.js');
+		$response->addTo('extraJs', 'scripts/pages/wificonfig.js');
 		$response->updateUrl = m_appurl('config/main/update');
 	}
 
