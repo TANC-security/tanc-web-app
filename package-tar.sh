@@ -20,6 +20,8 @@ cp  composer.json $PACKAGE_ROOT/opt/tanc/www/
 cp  composer.lock $PACKAGE_ROOT/opt/tanc/www/
 
 mkdir $PACKAGE_ROOT/opt/tanc/www/var/
+mkdir -p $PACKAGE_ROOT/opt/tanc/www/var/{db,cache,sess,templates}
+
 for x in `find var/ -type d`
 do
 	mkdir -p $PACKAGE_ROOT/opt/tanc/www/$x
