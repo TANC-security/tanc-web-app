@@ -10,6 +10,25 @@ class Kp_Main {
 		_set('page_title', 'Keypad');
 	}
 
+	public function fooAction($request, $response) {
+		$k = $request->cleanString('msg');
+		$response->addTo('key', trim($k));
+
+		$beanstalk = new Client(['host'=>'192.168.1.79']);
+		$beanstalk->connect();
+		$beanstalk->useTube('hangouts');
+
+		$x = $beanstalk->put(
+		    23, // Give the job a priority of 23.
+		    0,  // Do not wait to put job into the ready queue.
+		    10, // Give the job 10 sec to run.
+		    json_encode(['text'=>$k])
+		);
+		var_dump($x);
+		exit();
+	}
+
+
 	public function mainAction($response) {
 		$response->addTo('main', ['foo', 'bar']);
 		$response->addTo('extraJs', "
@@ -17,8 +36,27 @@ class Kp_Main {
 $(document).ready(function() {
 
 	var burl = $('body').data('base-url');
+	var kpbuf = '';
+	var timeoutRef;
+	var to = 600;
+	var doneTyping = function() {
+		
+		if (!timeoutRef) return;
+		if (kpbuf == '') return;
+		timoutRef = null;
+		var bufcopy = kpbuf;
+		kpbuf = '';
+		$.ajax(burl+'kp/main/send/?k='+bufcopy);
+	}
+	
 	$('.kp-container > button').on('click',function(e) {
-		$.ajax(burl+'kp/main/send/?k='+e.target.value);
+		kpbuf += e.target.value;
+	
+		if (timeoutRef)  clearTimeout(timeoutRef);
+		timeoutRef = setTimeout(function() {
+			doneTyping();
+		}, to);
+//		$.ajax(burl+'kp/main/send/?k='+e.target.value);
 	});
 	function pollDisplay() {
 	try {
