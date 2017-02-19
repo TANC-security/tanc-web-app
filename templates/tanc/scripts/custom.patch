@@ -1,0 +1,20 @@
+--- templates/tanc/js/custom.js	2017-02-19 16:10:17.300204755 -0500
++++ bower_components/gentelella/src/js/custom.js	2016-10-19 19:37:12.000000000 -0400
+@@ -57,7 +57,7 @@
+ 
+     // toggle small or large menu
+     $MENU_TOGGLE.on('click', function() {
+-        if ($BODY.hasClass('nav-off')) {
++        if ($BODY.hasClass('nav-md')) {
+             $SIDEBAR_MENU.find('li.active ul').hide();
+             $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
+         } else {
+@@ -65,7 +65,7 @@
+             $SIDEBAR_MENU.find('li.active-sm').addClass('active').removeClass('active-sm');
+         }
+ 
+-        $BODY.toggleClass('nav-off nav-sm');
++        $BODY.toggleClass('nav-md nav-sm');
+ 
+         setContentHeight();
+     });

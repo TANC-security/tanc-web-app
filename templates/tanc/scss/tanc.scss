@@ -11,3 +11,24 @@
 	display:block !important;
 }
 
+
+//nav menu off
+
+.nav-off .container.body .col-md-3.left_col {
+  display:none;
+  width: 0px;
+  padding: 0;
+  z-index: 9999;
+  position: absolute; }
+
+.nav-off .container.body .right_col {
+  padding: 10px 20px 0;
+  margin-left: 0px; }
+
+.nav-off .main_container .top_nav {
+  display: block;
+  margin-left: 0px; }
+
+
+.nav-off footer {
+  margin-left: 0px; }
