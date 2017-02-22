@@ -55,7 +55,11 @@ class Config_Main {
 
 	public function findConnectedAp() {
 		$list = array();
-		$ret = exec('iwgetid '.$this->iface, $list);
+		$ret = 0;
+		exec('iwgetid '.$this->iface, $list, $ret);
+		if ($ret) {
+			return $list;
+		}
 		$line = $list[0];
 		$ssid = explode(':', $line);
 		$connectedAp = array();

@@ -1,5 +1,12 @@
 <style type="text/css">
 </style>
+
+{{^wifiApList}} 
+<div class="alert alert-danger">
+No wifi access points found :(
+</div>
+{{/wifiApList}} 
+
 {{#wifiApList}} 
 <div class="well text-center col-md-6 col-xs-12 wifiap {{#if connected}}connected{{/if}}" data-address="{{address}}" data-ssid="{{ssid}}">
 <div class="icon-connected collapse"><i class="fa fa-check"></i></div>
