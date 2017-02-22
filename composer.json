@@ -28,7 +28,7 @@
     "require": {
         "metrodb": ">=3.1.3",
         "metrofw": ">=2.1.0",
-        "metrou":  ">=0.9.3",
+        "metrou":  ">=0.11.0",
         "metrophp/metrodi": ">=3.1.3",
         "filp/whoops": "~1.2@dev",
         "zendframework/zend-form": "^2.9",
