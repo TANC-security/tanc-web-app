@@ -54,7 +54,7 @@ _connect('authenticate', 'metrou/authenticator.php');
 _didef('authorizer', 'metrou/authorizer.php',
    	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime')
 );
-_connect('authorize', _make('authorizer'));
+_connect('authorize', array(_make('authorizer'), 'requireLogin'));
 
 
 //events
