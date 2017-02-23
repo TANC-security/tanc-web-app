@@ -24,6 +24,7 @@
 
 <h2>Check for updates</h2>
 <p>Force an update check now.</p>
-<form method="POST" action="/update/main/update">
+<form method="POST">
 <button type="submit" class="btn btn-default">check now &hellip;</button>
+<input type="hidden" name="action" value="update">
 </form>
