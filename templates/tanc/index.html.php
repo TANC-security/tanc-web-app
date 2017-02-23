@@ -28,7 +28,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><img src="<?php echo m_turl();?>logo-sm.png" height="32" width="32" style="margin-left:10px;"> <span>TANC!</span></a>
+              <a href="<?php echo m_appurl();?>" class="site_title"><img src="<?php echo m_turl();?>logo-sm.png" height="32" width="32" style="margin-left:10px;"> <span>TANC!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -38,8 +38,6 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a href="<?php echo m_appurl();?>"><i class="fa fa-home"></i> Home </a>
-                  </li>
                   <li><a href="<?php echo m_appurl('kp');?>"><i class="fa fa-table"></i> Keypad </a>
                   </li>
                   <li><a href="<?php echo m_appurl('config');?>"><i class="fa fa-wifi"></i> Wifi </a>
