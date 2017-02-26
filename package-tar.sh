@@ -10,7 +10,6 @@ PACKAGE_ROOT=build/tar/$PACKAGE_NAME
 
 rm -Rf $PACKAGE_ROOT/
 mkdir -p $PACKAGE_ROOT/opt/tanc/www/
-cp    vendor $PACKAGE_ROOT/opt/tanc/www/
 cp -r local $PACKAGE_ROOT/opt/tanc/www/
 cp -r src $PACKAGE_ROOT/opt/tanc/www/
 cp -r templates $PACKAGE_ROOT/opt/tanc/www/
