@@ -1,0 +1,14 @@
+[Unit]
+Description=TANC Status Queue Reader
+After=multi-user.target
+
+[Service]
+Type=idle
+User=pi
+Group=users
+WorkingDirectory=/opt/tanc/
+ExecStart=/usr/bin/php /opt/tanc/www/bin/queue-reader.php
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
