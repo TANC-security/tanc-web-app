@@ -20,14 +20,21 @@
             "type": "vcs",
             "url": "https://github.com/metrophp/metrou.git"
         },
-		{
+        {
             "type": "vcs",
             "url": "https://github.com/metrophp/metrofw.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/markkimsal/beanstalk.git"
         }
     ],
+
     "require": {
+		"swiftmailer/swiftmailer": "^5.4",
+        "markkimsal/beanstalk": "^0.2.0",
         "metrodb": ">=3.1.3",
-        "metrofw": ">=2.1.0",
+        "metrofw": ">=2.2.0",
         "metrou":  ">=0.11.0",
         "metrophp/metrodi": ">=3.1.3",
         "filp/whoops": "~1.2@dev",
