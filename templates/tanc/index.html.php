@@ -40,6 +40,8 @@
                 <ul class="nav side-menu">
                   <li><a href="<?php echo m_appurl('kp');?>"><i class="fa fa-table"></i> Keypad </a>
                   </li>
+                  <li><a href="<?php echo m_appurl('rules');?>"><i class="fa fa-envelope"></i> Notifications </a>
+                  </li>
                   <li><a href="<?php echo m_appurl('config');?>"><i class="fa fa-wifi"></i> Wifi </a>
                   </li>
                   <li><a href="<?php echo m_appurl('update');?>"><i class="fa fa-gears"></i> Update </a>
