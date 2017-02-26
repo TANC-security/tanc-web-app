@@ -31,6 +31,7 @@ class Template_Lightncandy {
 			LightnCandy::FLAG_ERROR_EXCEPTION |
             LightnCandy::FLAG_HANDLEBARSJS;
 
+		$fileIncluded = FALSE;
 
 		foreach ($viewFileList as $viewFile) {
 			try {
@@ -103,11 +104,19 @@ echo "</pre>";
 							return array($class, $fun);
 						},
 					]);
+				$fileIncluded = TRUE;
 				$this->logService->debug('Template: parsed file '.$viewFile.$this->fileExtension);
 				break;
 			} catch (\BarfException $e) {
 				$this->logService->error('Template: caught exception: '.$e->getMessage());
 				return;
+			}
+		}
+		if (!$fileIncluded && $template_section == 'main') {
+			if (is_array($response->main)) {
+				foreach($response->main as $_itm) {
+					echo $_itm;
+				}
 			}
 		}
 		return;
