@@ -8,9 +8,14 @@ class Config_Main {
 	 * Show a template
 	 */
 	public function mainAction($response) {
+		$response->addTo('extraJs', 'scripts/pages/wificonfig.js');
+	}
+
+	public function searchAction($request, $response) {
 		$connectedAp = $this->findConnectedAp();
 		$list = '';
-		$ret = exec('iwlist '.$this->iface.' scanning', $list);
+		$status = 0;
+		$ret = exec('sudo /sbin/iwlist '.$this->iface.' scanning', $list, $status);
 		$wifiApList = array();
 		$wifiAp     = array();
 		foreach ($list as $line) {
@@ -40,7 +45,6 @@ class Config_Main {
 			$wifiApList[] = $wifiAp;
 		}
 		$response->wifiApList = $wifiApList;
-		$response->addTo('extraJs', 'scripts/pages/wificonfig.js');
 		$response->updateUrl = m_appurl('config/main/update');
 	}
 
@@ -51,6 +55,8 @@ class Config_Main {
 		$response->psk     = $pwd;
 		$response->address = $address;
 		$response->ssid    = $ssid;
+
+		exec('sudo /opt/tanc/bin/wifi-connect.sh '.$ssid.' '.$pwd .'&');
 	}
 
 	public function findConnectedAp() {

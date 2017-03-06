@@ -1,9 +1,17 @@
 
 $(document).ready(function() {
+	//get a list of AP
+	$.get('?action=search').done(function(data) {
+		console.log(data);
+		var template = Handlebars.compile($('#page-template').html());
+		var html    = template(data);
+		$('.col-sm-12').last().append(html);
+		$('#wait').remove();
+	});
 
 var modal = $('#modal-wifi-setup');
 
-$('.wifiap').on('click', function(evt) {
+$('#content-main').on('click', '.wifiap', function(evt) {
 	modal.modal('show');
 
 	var addr = $(evt.currentTarget).data('address');

@@ -174,12 +174,12 @@
           <div class="row tile_count">
           </div>
           <!-- /top tiles -->
-          <div class="row">
+          <div class="row" id="content-sparkmsg">
           <div class="col-sm-12">
           <?php echo Metrofw_Template::parseSection('sparkmsg'); ?>
           </div>
           </div>
-          <div class="row">
+          <div class="row" id="content-main">
           <div class="col-sm-12">
 			<?php echo Metrofw_Template::parseSection('main'); ?>
           </div>
@@ -256,6 +256,7 @@
     <!-- Custom Theme Scripts -->
     <script src="<?php echo m_turl();?>js/custom.js"></script>
     <script src="<?php echo m_turl();?>scripts/form.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
 
 	<?php echo Metrofw_Template::parseSection('extraJs'); ?>
   </body>
