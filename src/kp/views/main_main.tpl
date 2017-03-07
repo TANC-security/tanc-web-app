@@ -16,23 +16,26 @@ div.kp-container > button{
     font-size:200%;
 }
 div.kp-view {
- width:100%;
- background:#FFE;
- font-size:300%;
- font-family: Monospace;
+  width:100%;
+  background:#FFE;
+  font-size:300%;
+  font-family: "LCD", monospace;
+  font-variant: small-caps;
+  padding: 0.1em 0.5em;
+  font-weight: bold;
 }
 .kp-container span.subtitle {
-font-size:50%;
+  font-size:50%;
 }
 .kp-container span.subtitle-small {
-font-size:45%;
+  font-size:45%;
 }
 
 </style>
 <div class="kp-view">
-you
+YOU
 <br/>
-wait
+WAIT
 </div>
 <div class="kp-container">
 <button value="A"><i class="fa fa-ambulance"></i></button>
