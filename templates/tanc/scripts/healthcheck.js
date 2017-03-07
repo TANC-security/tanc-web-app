@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$.get('/main/health')
+	$.get('?action=health')
 	.done(function(data) {
 		msg = data['user-message'] || null;
 		if(msg) {
