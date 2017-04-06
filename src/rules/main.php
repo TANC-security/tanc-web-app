@@ -10,11 +10,9 @@ use Zend\Form\Form;
 class Rules_Main {
 
 	public function saveSmtpAction($request, $response) {
-		$_di = \_makeNew('dataitem', 'settings', 'key');
-
-		$_di->andWhere('key', 'smtp');
-		$_di->loadExisting();
+		$_di = \_makeNew('settings');
 		$_di->setPrimaryKey('smtp');
+		$_di->loadExisting();
 		$_di->set('value', json_encode([
 			'host'          => $request->cleanString('host'),
 			'port'          => $request->cleanString('port'),

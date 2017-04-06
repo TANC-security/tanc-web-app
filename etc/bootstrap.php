@@ -96,5 +96,4 @@ _set('route_rules',
 	array_merge(array('/:appName/:modName/:actName/:arg'=>array(  )),
 	_get('route_rules')));
 
-// paste at bottom etc/bootsrap.php
-_iCanHandle('hangup',  'example/helloworld.php');
+_connect('resources', 'main/models.php');
