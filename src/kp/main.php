@@ -32,7 +32,7 @@ class Kp_Main {
 	public function mainAction($response) {
 		$response->addTo('main', ['foo', 'bar']);
 		$response->addTo('extraJs', "
-		<script>
+		<script type=\"text/javascript\">
 $(document).ready(function() {
 
 	var burl = $('body').data('base-url');
@@ -75,15 +75,24 @@ $(document).ready(function() {
 
 			$('.kp-view').html(line1+'<br/>'+line2);
 			setTimeout(pollDisplay,2000);
+		}).fail(function(xhr, type, status) {
+			showDisplayError();
+			setTimeout(pollDisplay,10000);
 		});
 	} catch (e) {
 			setTimeout(pollDisplay,3000);
 	}
 	}
 	try {
-	pollDisplay();
+		pollDisplay();
 	} catch (e) {
-			setTimeout(pollDisplay,3000);
+		setTimeout(pollDisplay,3000);
+	}
+	function showDisplayError() {
+		if ($('.alert').length){
+			return;
+		}
+		$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
 	}
 });
 		</script>
@@ -105,7 +114,6 @@ $(document).ready(function() {
 		} else {
 			$response->addTo('items', print_r($object->msg, 1));
 		}
-
 	}
 
 	public function displayBeanstalkAction($response) {
