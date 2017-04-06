@@ -22,6 +22,3 @@ WAIT
 <button value="#">#</button>
 </div>
 
-<script>
-
-</script>
