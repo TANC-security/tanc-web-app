@@ -32,3 +32,41 @@
 
 .nav-off footer {
   margin-left: 0px; }
+
+
+@font-face {
+    font-family: LCD;
+    font-weight: normal;
+    src: url("../fonts/LCD14.woff") format("woff");
+}
+
+.kp-container {
+    width: 100%;
+    border: 1px solid black;
+    display: inline-block;
+}
+.kp-container > button{
+    display: inline-block;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width: calc(25% - 10px);
+    height: 100px;
+    margin: 5px;
+    float: left;
+    font-size:200%;
+}
+.kp-view {
+  width:100%;
+  background:#FFE;
+  font-size:300%;
+  font-family: "LCD", monospace;
+  font-variant: small-caps;
+  padding: 0.1em 0.5em;
+  font-weight: 700;
+}
+.kp-container span.subtitle {
+  font-size:50%;
+}
+.kp-container span.subtitle-small {
+  font-size:45%;
+}
