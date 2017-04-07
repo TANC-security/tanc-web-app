@@ -14,7 +14,7 @@ class Kp_Main {
 		$k = $request->cleanString('msg');
 		$response->addTo('key', trim($k));
 
-		$beanstalk = new Client(['host'=>'192.168.1.79']);
+		$beanstalk = \_make('beanstalkclient');
 		$beanstalk->connect();
 		$beanstalk->useTube('hangouts');
 

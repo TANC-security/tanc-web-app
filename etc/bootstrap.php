@@ -97,3 +97,7 @@ _set('route_rules',
 	_get('route_rules')));
 
 _connect('resources', 'main/models.php');
+
+_didef('beanstalkclient', function() {
+	return new \Beanstalk\Client(['host'=>'172.17.0.1']);
+});
