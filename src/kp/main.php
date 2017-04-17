@@ -60,8 +60,8 @@ $(document).ready(function() {
 	});
 	function pollDisplay() {
 	try {
-		$.get(burl+'kp/main/display', function(data) {
-			if (!data.items) { setTimeout(pollDisplay, 2000); return;}
+		$.get(burl+'kp/main/displayBeanstalk', function(data) {
+			if (!data.items) { showDisplayError(); setTimeout(pollDisplay, 1000); return;}
 			var displayMsg   = data.items[0] || '';
 			var line1 = line2 = '';
 			for (i=0; i < 16; i++) {
@@ -74,7 +74,8 @@ $(document).ready(function() {
 			line2 = line2.replace(' ', '&nbsp;');
 
 			$('.kp-view').html(line1+'<br/>'+line2);
-			setTimeout(pollDisplay,2000);
+			setTimeout(pollDisplay,1000);
+			removeDisplayError();
 		}).fail(function(xhr, type, status) {
 			showDisplayError();
 			setTimeout(pollDisplay,10000);
@@ -94,6 +95,12 @@ $(document).ready(function() {
 		}
 		$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
 	}
+	function removeDisplayError() {
+		if ($('.alert').length){
+$('.alert').remove();
+		}
+	}
+
 });
 		</script>
 ");
@@ -106,6 +113,7 @@ $(document).ready(function() {
 	public function displayAction($response) {
 		$state = @file_get_contents('/dev/shm/display.json');
 		$object = json_decode($state);
+
 		if (!is_object($object) || ! isset($object->msg)) {
 			$response->statusCode = 500;
 			//$response->addTo('items', "Display         Error");
@@ -117,26 +125,30 @@ $(document).ready(function() {
 	}
 
 	public function displayBeanstalkAction($response) {
-		$beanstalk = new Client(['host'=>'127.0.0.1']);
-		$beanstalk->connect();
+		$beanstalk = \_make('beanstalkclient');
+		$x = $beanstalk->connect();
+		$beanstalk->watch('default');
 		$beanstalk->watch('display');
+		$beanstalk->useTube('display');
 
-		$job = $beanstalk->reserve(2);
-		$lastjob = $job;
-		while ($job) {
+		$currentjob = $beanstalk->reserve(2);
+		$lastjob = FALSE;
+		while ($job = $beanstalk->peekReady()) {
+			if ($lastjob) {
+				$beanstalk->delete($lastjob['id']);
+			}
 			$lastjob = $job;
-			$beanstalk->delete($job['id']);
-			$job = $beanstalk->reserve(0);
 		}
-		$object = json_decode($lastjob['body']);
+		$beanstalk->release($currentjob['id'], 1024, 0);
+		$beanstalk->disconnect();
+		$object = json_decode($currentjob['body']);
 		if (!is_object($object) || ! isset($object->msg)) {
-			//$response->addTo('items', "Display         Error");
-			//$response->addTo('usermsg', print_r($lastjob, 1));
+//			$response->addTo('items', "Display         Error");
+//			$response->addTo('usermsg', print_r($currentjob, 1));
 			//$response->addTo('usermsg', print_r($job, 1));
 		} else {
 			$response->addTo('items', print_r($object->msg, 1));
 		}
-
 	}
 
 	public function sendAction($request, $response) {
@@ -149,7 +161,7 @@ $(document).ready(function() {
 	}
 
 	public function sendKey($key) {
-		$beanstalk = new Client(['host'=>'127.0.0.1']);
+		$beanstalk = \_make('beanstalkclient');
 		$beanstalk->connect();
 		$beanstalk->useTube('input');
 
