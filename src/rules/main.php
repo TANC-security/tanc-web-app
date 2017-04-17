@@ -13,13 +13,20 @@ class Rules_Main {
 		$_di = \_makeNew('settings');
 		$_di->setPrimaryKey('smtp');
 		$_di->loadExisting();
-		$_di->set('value', json_encode([
+
+		$value = json_decode($_di->value, TRUE);
+		$value = array_merge($value, [
 			'host'          => $request->cleanString('host'),
 			'port'          => $request->cleanString('port'),
 			'smtp_username' => $request->cleanString('smtp_username'),
-			'smtp_password' => $request->cleanString('smtp_password'),
 			'from'          => $request->cleanString('from')
-		]));
+		]);
+		//only update password if it was passed in
+		if ($request->cleanString('smtp_password')) {
+			$value['smtp_password'] = $request->cleanString('smtp_password');
+		}
+
+		$_di->set('value', json_encode($value));
 		$x = $_di->save();
 		$response->redir = m_appurl('rules');
 	}
