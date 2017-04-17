@@ -51,10 +51,11 @@ class Status_Main {
 			return;
 		}
 
-		$settings = \_makeNew('dataitem', 'settings', 'key');
-		$settings->andWhere('key', 'smtp');
+		$settings = \_makeNew('settings');
+		$settings->set('key', 'smtp');
 		$settings->loadExisting();
 		$smtpVals = json_decode($settings->get('value'), TRUE);
+		$from     = $smtpVals['from'];
 
 		$transport = Swift_SmtpTransport::newInstance($smtpVals['host'], $smtpVals['port'], "ssl")
 //		  ->setAuthMode('XOAUTH2')
