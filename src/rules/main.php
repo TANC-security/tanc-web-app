@@ -29,7 +29,8 @@ class Rules_Main {
 		$k = $request->cleanString('msg');
 		$response->addTo('key', trim($k));
 
-		$beanstalk = new Client(['host'=>'127.0.0.1']);
+		$beanstalk = \_make('beanstalkclient');
+
 		$beanstalk->connect();
 		$beanstalk->useTube('status');
 
