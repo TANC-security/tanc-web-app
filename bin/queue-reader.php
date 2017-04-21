@@ -10,8 +10,15 @@ include_once(dirname(__DIR__).'/local/autoload.php');
 $metrofw = new Metrofw_Beanstalk();
 $metrofw->bootstrap('',  FALSE);
 
+$beanstalkAddress = getenv('BEANSTALK_ADDRESS');
+if ($beanstalkAddress == '') {
+	$beanstalkAddress = '127.0.0.1:11300';
+}
+
+$cnt=0;
+
 Amp\run(function () use ($metrofw) {
-	$client = new Amp\Beanstalk\BeanstalkClient('127.0.0.1:11300');
+	$client = new Amp\Beanstalk\BeanstalkClient($beanstalkAddress);
 
 	$client->watch('status');
 	echo "D/Queue: watching tube status ...\n";
