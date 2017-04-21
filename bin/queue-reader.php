@@ -42,13 +42,15 @@ Amp\run(function () use ($metrofw) {
 				return;
 			}
 
+			if (!$result) {
+				echo "D/Job: no result\n";
+				return;
+			}
+
 			if ($result) {
 				echo "I/Job: RESERVED JOB: ".$result[0]."\n";
 			}
 
-			if (!$result) {
-				return;
-			}
 			try {
 				$id = $result[0];
 
