@@ -52,7 +52,7 @@ Metrodb_Connector::setDsn('default', 'sqlite3://root:mysql@127.0.0.1:3306/var/db
 _connect('authenticate', 'metrou/authenticator.php');
 //Users
 _didef('authorizer', 'metrou/authorizer.php',
-   	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime')
+	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime', '/main/sslcheck')
 );
 _connect('authorize', array(_make('authorizer'), 'requireLogin'));
 
