@@ -18,7 +18,7 @@
     <link href="<?php echo m_turl();?>css/custom.min.css" rel="stylesheet">
   </head>
 
-  <body class="login">
+  <body class="login" data-base-url="<?php echo m_appurl();?>">
     <div>
       <a class="hiddenanchor" id="signup"></a>
       <a class="hiddenanchor" id="signin"></a>
@@ -96,5 +96,13 @@
         </div>
       </div>
     </div>
+    <!-- jQuery -->
+    <!-- Bootstrap -->
+    <script src="<?php echo m_turl();?>js/plugins.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+
+
+    <script src="<?php echo m_turl();?>scripts/sslcheck.js" type="text/javascript"></script>
+
   </body>
 </html>
