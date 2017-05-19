@@ -41,6 +41,8 @@ gulp.task('plugins', function() {
     return gulp.src([
 	'./bower_components/gentelella/vendors/jquery/dist/jquery.js',
 	'./bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.js',
+	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
+	'./bower_components/redux/index.js',
 	SRC+'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js',
 	])
 	.pipe(debug({title: 'plugins-js:'}))
@@ -86,6 +88,7 @@ gulp.task('plugins-css', function() {
       SRC+'vendors/font-awesome/css/font-awesome.min.css',
       SRC+'vendors/iCheck/skins/flat/green.css',
       SRC+'vendors/animate.css/animate.css',
+      SRC+'vendors/pnotify/dist/pnotify.css',
    ])
   .pipe(debug({title: 'plugins-css:'}))
       .pipe(concat('plugins-css.css'))
