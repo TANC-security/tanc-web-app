@@ -1,5 +1,6 @@
 $(document).ready(function(){
-	$.get('?action=health')
+	var burl = $('body').data('base-url');
+	$.get(burl+'main/health/')
 	.done(function(data) {
 		msg = data['user-message'] || null;
 		if(msg) {
