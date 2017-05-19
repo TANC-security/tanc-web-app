@@ -48,7 +48,7 @@ class Main_Sslcheck {
 			$subject .= '/'.$_k.'='. $_v;
 		}
 
-		$csr        = $this->makeDeviceCsr($subject, $privkey);
+		$csr        = $this->makeDeviceCsr($subject, $hostname, $privkey);
 		$devicecert = $this->signDeviceCert($csr, $privkey, $rootcert);
 		$response->addTo('certs', $devicecert);
 		if ($devicecert !== FALSE) {
@@ -106,11 +106,21 @@ class Main_Sslcheck {
 		return implode("\n", $output);
 	}
 
-	public function makeDeviceCsr($subject, $rootkey) {
+	public function makeDeviceCsr($subject, $hostname, $rootkey) {
+		$config = file_get_contents('./etc/ssl/openssl.cnf');
+		$config .= "\nreq_extensions = v3_req\n[v3_req]subjectAltName = @SAN\n[SAN]\nsubjectAltName=DNS:".$hostname;
+		file_put_contents('./etc/ssl/openssl.cnf.1', $config);
 		//openssl req -new -key selfsignwithus_root_private-4.key -nodes -subj '/CN=www.example.com' -out selfsignwithus_root_device_csr.pem
-		$command = 'openssl req -new -key /dev/stdin -nodes -subj '.escapeshellarg($subject).' -out /dev/stdout';
+		//$command = 'openssl req -new -key /dev/stdin -nodes -subj '.escapeshellarg($subject).' -config <(cat /etc/ssl/openssl.cnf <(printf "req_extensions = v3_req\n[SAN]\nsubjectAltName=DNS:192.168.1.98")) -reqexts SAN -extensions SAN';
+		$command = 'openssl req -new -key /dev/stdin -nodes -subj '.escapeshellarg($subject).' -config ./etc/ssl/openssl.cnf.1 -reqexts SAN -extensions SAN';
+//echo('echo '.escapeshellarg($rootkey).' | '.$command);
+//exit();
 		$output = array();
-		exec('echo '.escapeshellarg($rootkey).' | '.$command, $output);
+		$retvar = 0;
+		exec('echo '.escapeshellarg($rootkey).' | '.$command, $output, $retvar);
+		if ($retvar != 0) {
+			throw new Exception ('Unable to generate CSR');
+		}
 		return implode("\n", $output);
 	}
 
@@ -150,9 +160,10 @@ class Main_Sslcheck {
 
 		$command = './bin/sign_device_cert.php';
 		$retval  = 0;
-		exec( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command, $output, $retval);
-		//echo( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert).' | '.$command);
+//		exec( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command, $output, $retval);
+	echo( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert).' | '.$command);
 		$this->releaseLock();
+exit();
 //		echo 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command;
 //		exit();
 		return implode("\n", $output);
