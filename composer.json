@@ -30,6 +30,13 @@
         }
     ],
 
+    "autoload": {
+        "psr-4": {
+            "Tanc\\": "src/Tanc/"
+        }
+    },
+
+
     "require": {
 		"swiftmailer/swiftmailer": "^5.4",
         "markkimsal/beanstalk": "^0.2.0",

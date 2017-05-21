@@ -4,10 +4,11 @@ class Main_Sslcheck {
 
 	public $rootCertName = 'root_certificate.crt';
 	public $privKeyName  = 'root_key.rsa';
+	public $sslCertService;
 
 	public function gencertAction($request, $response) {
 
-		$privkey = $this->generateKey($this->privKeyName);
+		$privkey = $this->sslCertService->getOrGenerateKey($this->privKeyName);
 		if ($privkey !== FALSE) {
 			$response->addTo('items', 'success');
 		} else {
@@ -24,19 +25,10 @@ class Main_Sslcheck {
 			$subject .= '/'.$_k.'='. $_v;
 		}
 
-		$fname = 'etc/'.$this->rootCertName;
-		if (file_exists($fname)) {
-			$rootcert   = file_get_contents($fname);
-		} else {
-			$rootcert   = $this->generateRootCert($subject, $privkey);
-			$response->addTo('certs', $rootcert);
-			if ($rootcert !== FALSE) {
-				$f = fopen($fname, 'w');
-				fputs($f, $rootcert);
-				fclose($f);
-			}
+		$rootcert = $this->sslCertService->getOrGenerateRoot($this->rootCertName, $subject, $privkey);
+		if ($rootcert !== FALSE) {
+			$response->addTo('items', 'success');
 		}
-
 
 		list($hostname) = explode('/', $request->baseUri);
 		$subject = '';
@@ -52,7 +44,7 @@ class Main_Sslcheck {
 		$devicecert = $this->signDeviceCert($csr, $privkey, $rootcert);
 		$response->addTo('certs', $devicecert);
 		if ($devicecert !== FALSE) {
-			$f = fopen('etc/'.$hostname.'.crt', 'w');
+			$f = fopen('etc/ssl/'.$hostname.'.crt', 'w');
 			fputs($f, $devicecert);
 			fclose($f);
 		}
@@ -60,50 +52,13 @@ class Main_Sslcheck {
 		return;
 	}
 
-	public function generateRootCert($subject, $signkey) {
-		//openssl req -x509 -new -nodes -key selfsignwithus_root_private-4.key -days 365 -subj /C=US/O=unit -out /dev/stdout
-        $keygen  = 'openssl req -x509 -new -nodes -key /dev/stdin -days 365 -subj '.escapeshellarg($subject); //.' -out /dev/stdout';
-		$output = array();
-		$retvar = 0;
-		$keygen = 'echo -n '.escapeshellarg($signkey).' | '.$keygen;
-		exec($keygen, $output, $retvar);
-		return implode("\n", $output);
-	}
-
-
 	public function dlrootAction($reqeuest, $response, $kernel) {
 		$kernel->clearHandlers('output');
 		$kernel->connect('output', function() {
 			header('Content-type: text/plain');
 			header('Content-disposition: attachment; filename=TANC-root-certificate.crt');
-			echo file_get_contents('etc/root_certificate.crt');
+			echo file_get_contents('etc/ssl/root_certificate.crt');
 		});
-	}
-
-	public function generateKey($fname) {
-		$file = './etc/'.$fname;
-		if (file_exists($file)) {
-			return file_get_contents($file);
-		}
-
-		//generate new certificate
-		$type = 'rsa';
-		$bits = '2048';
-
-		$keygen  = 'openssl genpkey -algorithm '.strtoupper($type).' -pkeyopt rsa_keygen_bits:'.$bits;
-		$output = array();
-		$retvar = 0;
-		exec( escapeshellcmd($keygen), $output, $retvar);
-		if ($retvar !== 0) {
-			return FALSE;
-		}
-		$f = fopen($file, 'w');
-		if (!$f) {
-			return FALSE;
-		}
-		fputs($f, implode("\n", $output));
-		fclose($f);
-		return implode("\n", $output);
 	}
 
 	public function makeDeviceCsr($subject, $hostname, $rootkey) {
@@ -160,12 +115,13 @@ class Main_Sslcheck {
 
 		$command = './bin/sign_device_cert.php';
 		$retval  = 0;
-//		exec( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command, $output, $retval);
-	echo( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert).' | '.$command);
+		exec( 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command, $output, $retval);
 		$this->releaseLock();
-exit();
-//		echo 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command;
-//		exit();
+		if ($retval !== 0) {
+//			echo 'echo '.escapeshellarg($csr."\n".$rootkey."\n".$rootcert."\n").' | '.$command;
+//			exit();
+			throw new Exception ('Signing device cert failed');
+		}
 		return implode("\n", $output);
 	}
 
