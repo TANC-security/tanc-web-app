@@ -41,6 +41,7 @@ if ($crt == '') {
 	die(1);
 }
 
+setup_ca_dirs();
 
 
 		$pid = pcntl_fork();
@@ -96,3 +97,13 @@ if ($crt == '') {
 		$status = 0;
 		pcntl_waitpid($pid, $status);
 		pcntl_waitpid($pid2, $status);
+
+function setup_ca_dirs() {
+	$root = './var/demoCA/';
+	mkdir($root.'newcerts', 0700, TRUE);
+	if (!file_exists($root.'serial')) {
+		file_put_contents($root.'serial', '01');
+	}
+	file_put_contents($root.'index.txt.attr', "unique_subject = no\n");
+	touch($root.'index.txt');
+}
