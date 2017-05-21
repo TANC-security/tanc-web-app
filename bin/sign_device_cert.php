@@ -71,16 +71,26 @@ if ($crt == '') {
 		$output = array();
 		$retval = 0;
 #		$command  = 'openssl x509 -req -CA var/openssl.cert -CAkey var/openssl.key -CAcreateserial -days 3650';//  -out /dev/stdout';
-		$command  = 'openssl ca   -config ./etc/ssl/openssl.cnf.1 -batch -in /dev/stdin -cert var/openssl.cert -keyfile var/openssl.key -days 3650 -out /dev/stdout';
+		$command  = 'openssl ca -config ./etc/ssl/openssl.cnf.1 -batch -in /dev/stdin -cert var/openssl.cert -keyfile var/openssl.key -days 3650 -out /dev/stdout';
 		//echo( 'echo '.escapeshellarg(trim($csr)).' | '.$command);
 		//echo( 'echo '.escapeshellarg($csr."\n").' | '.$command."\n");
 		$x = exec( 'echo '.escapeshellarg($csr."\n").' | '.$command, $output, $retval);
 		if ($retval != 0 ) {
 			echo implode("", $output);
 			echo "execution failed with status ".$retval." \n";
-			exit();
+			exit(1);
 		}
-		echo implode("\n", $output);
+		//clean verbose CA output
+		$certstart = FALSE;
+		foreach ($output as $_line) {
+			if (strpos($_line, '-----BEGIN CERTIFICATE-----') === 0) {
+				$certstart = TRUE;
+			}
+			if ($certstart) {
+				echo $_line."\n";
+			}
+		}
+//		echo implode("\n", $output);
 #		exec ('rm var/openssl.srl');
 
 		$status = 0;
