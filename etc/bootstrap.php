@@ -67,6 +67,7 @@ _didef('router',         'metrofw/router.php');
 _didef('foobar',         (object)array());
 
 _didef('logService',     'main/logger.php');
+_didef('sslCertService', 'Tanc\SSL\CertService');
 
 //metrodb
 _didef('dataitem', 'metrodb/dataitem.php');
