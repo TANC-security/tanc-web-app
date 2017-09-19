@@ -18,14 +18,26 @@ class Status_Main {
 			$message = $this->_getMessageDisarmed();
 		}
 
+
+		$notifyList = \_makeNew('settings');
+		$notifyList->set('key', 'notifylist1');
+		$notifyList->loadExisting();
+		$notifyListVals = json_decode($notifyList->get('value'), TRUE);
+		$to = [];
+		foreach($notifyListVals as $_key => $_val) {
+			if ($_val)
+			$to[] = $_val;
+		}
+
+
 //			echo $message."\n";
 			echo "sending email to ...\n";
-			echo _get('mail.to.default')."\n";
+			echo json_encode($to)."\n";
 
 			$x = $this->sendTransactionEmail(
-				_get('mail.to.default'),
+				$to,
 				$message,
-				_get('smtp.username'),
+				_get('smtp.username', NULL),
 				NULL,
 				$message
 			);
@@ -51,10 +63,11 @@ class Status_Main {
 			return;
 		}
 
-		$settings = \_makeNew('settings');
-		$settings->set('key', 'smtp');
-		$settings->loadExisting();
-		$smtpVals = json_decode($settings->get('value'), TRUE);
+		$settings = \_makeNew('plugin');
+		$settings->set('plug_name', 'smtp1');
+		$settings->set('plug_type', 'smtp');
+		$x = $settings->loadExisting();
+		$smtpVals = json_decode($settings->get('data'), TRUE);
 		$from     = $smtpVals['from'];
 
 		$transport = Swift_SmtpTransport::newInstance($smtpVals['host'], $smtpVals['port'], "ssl")

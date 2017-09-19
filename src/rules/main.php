@@ -10,11 +10,13 @@ use Zend\Form\Form;
 class Rules_Main {
 
 	public function saveSmtpAction($request, $response) {
-		$_di = \_makeNew('settings');
-		$_di->setPrimaryKey('smtp');
+		$_di = \_makeNew('plugin');
+		$_di->set('plug_name', 'smtp1');
+		$_di->set('plug_type', 'smtp');
 		$_di->loadExisting();
 
 		$value = json_decode($_di->value, TRUE);
+		$value = $value ? $value:array();
 		$value = array_merge($value, [
 			'host'          => $request->cleanString('host'),
 			'port'          => $request->cleanString('port'),
@@ -26,7 +28,27 @@ class Rules_Main {
 			$value['smtp_password'] = $request->cleanString('smtp_password');
 		}
 
+		$_di->set('data', json_encode($value));
+
+		$x = $_di->save();
+		$response->redir = m_appurl('rules');
+	}
+
+	public function saveEmailsAction($request, $response) {
+		$_di = \_makeNew('settings');
+		$_di->set('key', 'notifylist1');
+		$_di->loadExisting();
+
+		$value = json_decode($_di->value, TRUE);
+		$value = $value ? $value:array();
+		$value = array_merge($value, [
+			'email_1' => $request->cleanString('email_1'),
+			'email_2' => $request->cleanString('email_2'),
+			'email_3' => $request->cleanString('email_3'),
+		]);
+
 		$_di->set('value', json_encode($value));
+
 		$x = $_di->save();
 		$response->redir = m_appurl('rules');
 	}
@@ -52,12 +74,21 @@ class Rules_Main {
 	}
 
 	public function mainAction($request, $response) {
-		$settings = \_makeNew('dataitem', 'settings', 'key');
-		$x = $settings->load('smtp');
-		$smtpVals = json_decode($settings->get('value'), TRUE);
+		//$settings = \_makeNew('dataitem', 'settings', 'key');
+		$settings = \_makeNew('plugin');
+		$settings->set('plug_name', 'smtp1');
+		$settings->set('plug_type', 'smtp');
+		$x = $settings->loadExisting();
+		$smtpVals = json_decode($settings->get('data'), TRUE);
 
 		$response->smtpForm = $this->loadSmtpForm($smtpVals);
-		$response->emailForm = $this->loadEmailForm();
+
+		$notifyList = \_makeNew('settings');
+		$notifyList->set('key', 'notifylist1');
+		$notifyList->loadExisting();
+		$notifyListVals = json_decode($notifyList->get('value'), TRUE);
+
+		$response->emailForm = $this->loadEmailForm($notifyListVals);
 	}
 
 	public function loadSmtpForm($params=[]) {
@@ -135,15 +166,15 @@ class Rules_Main {
 
 		$email1 = new Element('email_1');
 		$email1->setLabel('Email 1');
-		$email1->setValue(@$params['email1']);
+		$email1->setValue(@$params['email_1']);
 
 		$email2 = new Element('email_2');
 		$email2->setLabel('Email 2');
-		$email2->setValue(@$params['email2']);
+		$email2->setValue(@$params['email_2']);
 
 		$email3 = new Element('email_3');
 		$email3->setLabel('Email 3');
-		$email3->setValue(@$params['email3']);
+		$email3->setValue(@$params['email_3']);
 
 
 		$send = new Element('submit');
@@ -159,6 +190,16 @@ class Rules_Main {
 		$form->add($email1);
 		$form->add($email2);
 		$form->add($email3);
+
+		$send = new Element('submit');
+		$send->setValue('Save Notification Emails');
+		$send->setAttributes([
+				'type' => 'submit',
+				'class' => 'form-control btn btn-primary',
+		]);
+
+		$form->add($action);
+		$form->add($send);
 
 		$inputFilter = new Zend\InputFilter\InputFilter();
 		$form->setInputFilter($inputFilter);
