@@ -8,7 +8,7 @@ class Template_Zendform {
 		if ($formHelper == NULL) {
 			$formHelper     = new Zend\Form\View\Helper\Form();
 		}
-		echo $formHelper->openTag($form);
+		return $formHelper->openTag($form);
 	}
 
 	public static function rowHelper($row, $opts) {
