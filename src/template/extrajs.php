@@ -4,6 +4,9 @@ class Template_Extrajs {
 
 	public function template($response, $template_section) {
 		$list = $response->extraJs;
+		if ($list === NULL) {
+			return;
+		}
 		if (!is_array($list)) {
 			$list = array($list);
 		}
