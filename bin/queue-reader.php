@@ -17,7 +17,7 @@ if ($beanstalkAddress == '') {
 
 $cnt=0;
 
-Amp\run(function () use ($metrofw) {
+Amp\run(function () use ($metrofw, $beanstalkAddress) {
 	$client = new Amp\Beanstalk\BeanstalkClient($beanstalkAddress);
 
 	$client->watch('status');
