@@ -50,15 +50,15 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     width: calc(25% - 10px);
-    height: 100px;
+    height: 80px;
     margin: 5px;
     float: left;
-    font-size:200%;
+    font-size:24px;
 }
 .kp-view {
   width:100%;
   background:#FFE;
-  font-size:300%;
+  font-size:24px;
   font-family: "LCD", monospace;
   font-variant: small-caps;
   padding: 0.1em 0.5em;
@@ -69,4 +69,19 @@
 }
 .kp-container span.subtitle-small {
   font-size:45%;
+}
+
+@media(min-width:480px) {
+	.kp-view {
+		font-size:220%;
+	}
+}
+@media(min-width:768px) {
+	.kp-view {
+		font-size:300%;
+	}
+	.kp-container > button{
+		font-size:200%;
+		height: 100px;
+	}
 }
