@@ -4,12 +4,36 @@
 _set('env', 'dev');
 //override with Apache SetEnv
 // or fastcgi_param   APPLICATION_ENV  production
+ /*
 if (array_key_exists('APPLICATION_ENV', $_SERVER)) {
 	_set('env', $_SERVER['APPLICATION_ENV']);
 }
 if (array_key_exists('APP_ENV', $_SERVER)) {
 	_set('env', $_SERVER['APP_ENV']);
 }
+  */
+
+foreach (array('APPLICATION_ENV', 'APP_ENV') as $_envkey) {
+	if (array_key_exists($_envkey, $_SERVER)) {
+		_set('env', $_SERVER[$_envkey]);
+		break;
+	}
+	if (getenv($_envkey) !==FALSE) {
+		_set('env', getenv($_envkey));
+		break;
+	}
+}
+foreach (array('BEANSTALK_ADDRESS') as $_envkey) {
+	if (array_key_exists($_envkey, $_SERVER)) {
+		_set('BEANSTALK_ADDRESS', $_SERVER[$_envkey]);
+		break;
+	}
+	if (getenv($_envkey) !==FALSE) {
+		_set('BEANSTALK_ADDRESS', getenv($_envkey));
+		break;
+	}
+}
+
 
 //setup metrofw
 _iCanHandle('analyze',   'metrofw/analyzer.php');
@@ -99,6 +123,8 @@ _set('route_rules',
 _connect('resources', 'main/models.php');
 
 _didef('beanstalkclient', function() {
+	$addr = _get('BEANSTALK_ADDRESS', '127.0.0.1:11300');
+	list($host, $port) = explode(':', $addr);
 	include_once ('src/Beanstalk/Client.php');
-	return new \Beanstalk\Client(['host'=>'172.17.0.1']);
+	return new \Beanstalk\Client(['host'=>$host, 'port'=>$port]);
 });
