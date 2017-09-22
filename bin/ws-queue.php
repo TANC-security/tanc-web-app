@@ -26,20 +26,25 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 	}
 
 	public function blast($msg) {
-		if (!count($this->clients)) {
-			return;
-		}
 		if ($this->lastMsg == $msg) {
 			return;
 			//nothing new
 		}
+		$this->lastMsg = $msg;
 
+		/*
+		if (!count($this->clients)) {
+			return;
+		}
+		 */
+
+		$this->endpoint->broadcast($msg);
+		/*
 		//TODO: use broadcast()
 		foreach ($this->clients as $_clientId) {
 			$this->endpoint->send($msg, $_clientId);
 		}
-		$this->lastMsg = $msg;
-
+		 */
 	}
 
 	public function onHandshake(Aerys\Request $request, Aerys\Response $response) {
