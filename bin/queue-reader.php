@@ -65,8 +65,9 @@ Amp\run(function () use ($metrofw, $beanstalkAddress) {
 
 				_didef('request',   $request);
 				$response = _makeNew('response');
+
 				try {
-				$metrofw->onRequest($request, $response);
+					$metrofw->onRequest($request, $response);
 				} catch (\Error $t) {
 					var_dump($t);
 				} catch (\Exception $t) {
