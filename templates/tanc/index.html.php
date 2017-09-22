@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo _get('site_title');?> | <?php echo _get('page_title');?></title>
+	<title><?php echo Metrofw_Template::parseSection('pagetitle'); ?></title>
 
     <!-- Bootstrap -->
     <!-- Font Awesome -->

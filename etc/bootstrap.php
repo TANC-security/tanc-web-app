@@ -50,6 +50,7 @@ _connect('template',          'template/lightncandy.php::template', 3);
 _connect('template.main',     'template/lightncandy.php::template', 3);
 _connect('template.sparkmsg', 'template/sparkmsg.php::template');
 _connect('template.extraJs',  'template/extrajs.php::template');
+_connect('template.pagetitle','template/pagetitle.php::template');
 
 
 
