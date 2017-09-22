@@ -1,0 +1,15 @@
+[Unit]
+Description=TANC Display Websocket Service
+After=multi-user.target
+
+[Service]
+Type=idle
+User=pi
+Group=users
+WorkingDirectory=/opt/tanc/www
+ExecStart=/usr/bin/php /opt/tanc/www/bin/ws-queue.php
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
