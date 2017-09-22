@@ -46,7 +46,7 @@ $(document).ready(function() {
 		timoutRef = null;
 		var bufcopy = kpbuf;
 		kpbuf = '';
-		$.ajax(burl+'kp/main/send/?k='+bufcopy);
+		$.ajax(burl+'kp/main/send/?k='+encodeURIComponent(bufcopy));
 	}
 	
 	$('.kp-container > button').on('click',function(e) {
@@ -84,11 +84,46 @@ $(document).ready(function() {
 			setTimeout(pollDisplay,3000);
 	}
 	}
-	try {
-		pollDisplay();
-	} catch (e) {
-		setTimeout(pollDisplay,3000);
+
+	function onBadWs() {
+		showDisplayError();
+		wsDisplay();
 	}
+
+	function wsDisplay() {
+		// Then some JavaScript in the browser:
+		var conn = new WebSocket('ws://'+burl.split(':')[1]+'display/');
+
+		conn.onmessage = function(e) {
+			//console.log(e.data);
+			var displayMsg   = e.data || '';
+			var line1 = line2 = '';
+			for (i=0; i < 16; i++) {
+				line1 += displayMsg.charAt(i);
+			}
+			for (i=16; i < 32; i++) {
+				line2 += displayMsg.charAt(i);
+			}
+			line1 = line1.replace(' ', '&nbsp;');
+			line2 = line2.replace(' ', '&nbsp;');
+
+			$('.kp-view').html(line1+'<br/>'+line2);
+			removeDisplayError();
+		};
+		conn.onopen = function(e) {
+		};
+
+		conn.onclose = function(e) {
+			setTimeout(onBadWs,1000);
+		};
+	}
+	try {
+//		pollDisplay();
+		wsDisplay();
+	} catch (e) {
+		setTimeout(onBadWs,3000);
+	}
+
 	function showDisplayError() {
 		if ($('.alert').length){
 			return;
