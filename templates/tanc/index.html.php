@@ -14,9 +14,13 @@
     <!-- iCheck -->
     <link href="<?php echo m_turl();?>css/plugins-css.css" rel="stylesheet">
     <!-- bootstrap-progressbar -->
+<!--
     <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+-->
     <!-- jVectorMap -->
+<!--
     <link href="css/maps/jquery-jvectormap-2.0.3.css" rel="stylesheet"/>
+-->
 
     <!-- Custom Theme Style -->
     <link href="<?php echo m_turl();?>css/custom.min.css" rel="stylesheet">
