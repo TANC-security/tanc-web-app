@@ -23,16 +23,11 @@
         {
             "type": "vcs",
             "url": "https://github.com/metrophp/metrofw.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/markkimsal/beanstalk.git"
         }
     ],
 
     "require": {
-		"swiftmailer/swiftmailer": "^5.4",
-        "markkimsal/beanstalk": "^0.2.0",
+        "swiftmailer/swiftmailer": "^5.4",
         "metrodb": ">=3.1.3",
         "metrofw": ">=2.2.0",
         "metrou":  ">=0.11.0",
@@ -44,7 +39,8 @@
         "zendframework/zend-servicemanager": "^3.2",
         "zendframework/zend-escaper": "^2.5",
         "zordius/lightncandy": "dev-master",
-        "amphp/aerys": "0.5.0"
+        "amphp/beanstalk": ">=0.2.0",
+        "amphp/aerys": ">=0.6.0"
     },
     "config": {
         "vendor-dir": "local"
