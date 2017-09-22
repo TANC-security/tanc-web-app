@@ -85,12 +85,17 @@ $(document).ready(function() {
 	}
 	}
 
-function wsDisplay() {
-    // Then some JavaScript in the browser:
-    var conn = new WebSocket('ws://'+burl.split(':')[1]+'display/');
-	conn.onmessage = function(e) {
-//console.log(e.data);
+	function onBadWs() {
+		showDisplayError();
+		wsDisplay();
+	}
 
+	function wsDisplay() {
+		// Then some JavaScript in the browser:
+		var conn = new WebSocket('ws://'+burl.split(':')[1]+'display/');
+
+		conn.onmessage = function(e) {
+			//console.log(e.data);
 			var displayMsg   = e.data || '';
 			var line1 = line2 = '';
 			for (i=0; i < 16; i++) {
@@ -103,19 +108,22 @@ function wsDisplay() {
 			line2 = line2.replace(' ', '&nbsp;');
 
 			$('.kp-view').html(line1+'<br/>'+line2);
-//			setTimeout(pollDisplay,1000);
 			removeDisplayError();
+		};
+		conn.onopen = function(e) {
+		};
 
-};
-	conn.onopen = function(e) {
-	};
-}
+		conn.onclose = function(e) {
+			setTimeout(onBadWs,1000);
+		};
+	}
 	try {
 //		pollDisplay();
 		wsDisplay();
 	} catch (e) {
-		setTimeout(pollDisplay,3000);
+		setTimeout(onBadWs,3000);
 	}
+
 	function showDisplayError() {
 		if ($('.alert').length){
 			return;
