@@ -129,7 +129,7 @@ Loop::run(function () use ($beanstalkAddress) {
 		
 				try {
 					$myWs->blast(print_r($status['msg'], 1));
-					echo "D/Job: nothing to do .\n";
+					echo "D/WS: blast msg: ".$status['msg']." .\n";
 				} catch (\Error $t) {
 					var_dump($t);
 				} catch (\Exception $t) {
