@@ -6,7 +6,7 @@ ob_implicit_flush(true);
 
 include_once(dirname(__DIR__).'/local/autoload.php');
 
-require_once(dirname(__DIR__).'/local/amphp/aerys/lib/internal/functions.php');
+#require_once(dirname(__DIR__).'/local/amphp/aerys/lib/internal/functions.php');
 
 $beanstalkAddress = getenv('BEANSTALK_ADDRESS');
 if ($beanstalkAddress == '') {
@@ -15,6 +15,7 @@ if ($beanstalkAddress == '') {
 
 $cnt=0;
 
+use Amp\Loop;
 
 class MyAwesomeWebsocket implements Aerys\Websocket {
     private $endpoint;
@@ -77,7 +78,8 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 
 use Psr\Log\NullLogger;
 
-Amp\run(function () use ($beanstalkAddress) {
+$beanstalkAddress = 'tcp://'.$beanstalkAddress.'?tube=display';
+Loop::run(function () use ($beanstalkAddress) {
 	$client = new Amp\Beanstalk\BeanstalkClient($beanstalkAddress);
 	$client->watch('display');
 
@@ -90,7 +92,8 @@ Amp\run(function () use ($beanstalkAddress) {
 
 
 	echo "D/Queue: watching tube display ...\n";
-	Amp\repeat(function() use ($client, $myWs){
+	Loop::repeat($msInterval=50,
+		function() use ($client, $myWs){
 
 		try {
 			$promise = $client->reserve(0);
@@ -99,7 +102,7 @@ Amp\run(function () use ($beanstalkAddress) {
 				//var_dump($e->getJob());
 			}
 		}
-		$promise->when( function($error, $result, $cbData) use ($client, $myWs) {
+		$promise->onResolve( function($error, $result) use ($client, $myWs) {
 
 			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
 				return;
@@ -139,7 +142,7 @@ Amp\run(function () use ($beanstalkAddress) {
 //				$k  = $client->release($id);
 				//echo "I/Job: DELETING JOB: " . $id."\n";
 
-				$k->when( function($err, $res) use ($client, $id) {
+				$k->onResolve( function($err, $res) use ($client, $id) {
 					echo "I/Job: DELETED JOB: " . $id."\n";
 				});
 				/*
@@ -148,7 +151,7 @@ Amp\run(function () use ($beanstalkAddress) {
 				var_dump($e->getMessage());
 			}
 		});
-	}, $msInterval=50);
+	});
 });
 
 
