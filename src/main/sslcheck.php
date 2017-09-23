@@ -48,13 +48,12 @@ class Main_Sslcheck {
 			fputs($f, $devicecert);
 			fclose($f);
 		}
-
 		return;
 	}
 
 	public function dlrootAction($reqeuest, $response, $kernel) {
 		$kernel->clearHandlers('output');
-		$kernel->connect('output', function() {
+		_connect('output', function() {
 			header('Content-type: text/plain');
 			header('Content-disposition: attachment; filename=TANC-root-certificate.crt');
 			echo file_get_contents('etc/ssl/root_certificate.crt');
