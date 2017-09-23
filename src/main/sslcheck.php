@@ -6,6 +6,17 @@ class Main_Sslcheck {
 	public $privKeyName  = 'root_key.rsa';
 	public $sslCertService;
 
+	/**
+	 * Output some static JS for JSONP request.
+	 * This function is only used to check if a valid
+	 * cert is installed already via JS
+	 */
+	public function pingAction($request, $response) {
+		header('Content-type: application/json');
+		echo "sslcheck({'sslcheck':'good'});";
+		exit();
+	}
+
 	public function gencertAction($request, $response) {
 
 		$privkey = $this->sslCertService->getOrGenerateKey($this->privKeyName);

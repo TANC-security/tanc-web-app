@@ -132,21 +132,33 @@ $(document).ready(function(){
 	}
 
 	$('body').on('click', '.create-ssl', function(evt) {
-		store.dispatch({'type':'SSL_NOTICE_HIDE'});
-		hideSSLFailedNotice( );
-		//gen new root cert
-		// create modal
-		store.dispatch({'type':'GENERATE_SSL', 'text':"Setting up SSL"});
+		//try to load cross-origin https
+		//if fails (jsonp doesn't fail with CORS)
+		//then start to gen a cert, otherwise redirect
+		sburl = burl.replace('http:', 'https:');
+		$.ajax(sburl +'main/sslcheck/ping', {
+			dataType: "jsonp",
+			crossDomain: true,
+			jsonpCallback: 'sslcheck'
+		}).fail(function(xhr, textStatus, error) {
+			store.dispatch({'type':'SSL_NOTICE_HIDE'});
+			hideSSLFailedNotice( );
+			//gen new root cert
+			// create modal
+			store.dispatch({'type':'GENERATE_SSL', 'text':"Setting up SSL"});
 
-		window.setTimeout(
-			genCert, 1500
-		);
+			window.setTimeout(
+				genCert, 1500
+			);
+		}).done(function(data, textStatus, xhr) {
+			window.location = sburl;
+		});
 	});
 
 	function genCert() {
 		$.post(burl+'main/sslcheck/', {
 			'action': 'gencert'
-		}).done(function(data) {
+		}).done(function(xhr, textStatus, error) {
 			//display cert for download
 			var burls = 'https' + burl.substr(4);
 			console.log(burl);
@@ -155,7 +167,7 @@ $(document).ready(function(){
 				'text': '<h3>Done</h3><ol><li>Save your certificate <a href="'+burl+'main/sslcheck/dlroot">here</a></li><li>Import the certificate into your browser.</li><li>Continue on to the secure page by clicking <a href="'+burls+'">here</a>.</li></ol>',
 				'props': {'spinner': false},
 			});
-		}).error(function(data) {
+		}).fail(function(data, textStatus, xhr) {
 			msg = data['user-message'] || null;
 			store.dispatch({'type':'SSL_ERROR', 'text':msg});
 		});
