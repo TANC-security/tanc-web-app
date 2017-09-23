@@ -92,7 +92,12 @@ $(document).ready(function() {
 
 	function wsDisplay() {
 		// Then some JavaScript in the browser:
-		var conn = new WebSocket('ws://'+burl.split(':')[1]+'display/');
+		var burlParts = burl.split(':');
+		var scheme = 'ws://';
+		if (burlParts[0] == 'https') {
+			scheme = 'wss://';
+		}
+		var conn = new WebSocket(scheme+burlParts[1]+'display/');
 
 		conn.onmessage = function(e) {
 			//console.log(e.data);
