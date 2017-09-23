@@ -28,7 +28,8 @@ class CertService {
 		$key = $this->getFile($file);
 		if (!$key) {
 			$key = $this->generateRoot($subject, $privkey);
-			if (!$key) {
+
+			if ($key) {
 				file_put_contents($file, $key);
 			}
 		}
@@ -39,7 +40,7 @@ class CertService {
 	 * @return mixed String contents of file or FALSE if file does not exist
 	 */
 	public function getFile($fname) {
-		$file = $this->baseDir.$fname;
+		$file = $fname;
 		if (file_exists($file)) {
 			return file_get_contents($file);
 		}
