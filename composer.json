@@ -26,6 +26,13 @@
         }
     ],
 
+    "autoload": {
+        "psr-4": {
+            "Tanc\\": "src/Tanc/"
+        }
+    },
+
+
     "require": {
         "swiftmailer/swiftmailer": "^5.4",
         "metrodb": ">=3.1.3",

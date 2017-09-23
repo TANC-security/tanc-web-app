@@ -67,6 +67,7 @@ _didef('router',         'metrofw/router.php');
 _didef('foobar',         (object)array());
 
 _didef('logService',     'main/logger.php');
+_didef('sslCertService', 'Tanc\SSL\CertService');
 
 //metrodb
 _didef('dataitem', 'metrodb/dataitem.php');
@@ -77,7 +78,7 @@ Metrodb_Connector::setDsn('default', 'sqlite3://root:mysql@127.0.0.1:3306/var/db
 _connect('authenticate', 'metrou/authenticator.php');
 //Users
 _didef('authorizer', 'metrou/authorizer.php',
-   	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime')
+	array('metrou', '/login', '/dologin', '/logout', '/dologout', '/register', '/firsttime', '/main/sslcheck')
 );
 _connect('authorize', array(_make('authorizer'), 'requireLogin'));
 
