@@ -38,7 +38,7 @@ $(document).ready(function() {
 	var burl = $('body').data('base-url');
 	var kpbuf = '';
 	var timeoutRef;
-	var to = 600;
+	var to = 800;
 	var doneTyping = function() {
 		
 		if (!timeoutRef) return;
@@ -92,7 +92,7 @@ $(document).ready(function() {
 
 	function wsDisplay() {
 		// Then some JavaScript in the browser:
-		var burlParts = burl.split(':');
+		var burlParts = burl.split('://');
 		var scheme = 'ws://';
 		if (burlParts[0] == 'https') {
 			scheme = 'wss://';
