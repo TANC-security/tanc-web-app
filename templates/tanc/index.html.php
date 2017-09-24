@@ -50,6 +50,8 @@
                   </li>
                   <li><a href="<?php echo m_appurl('update');?>"><i class="fa fa-gears"></i> Update </a>
                   </li>
+                  <li><a href="<?php echo m_appurl('services');?>"><i class="fa fa-puzzle-piece"></i> Services </a>
+                  </li>
                 </ul>
               </div>
 
