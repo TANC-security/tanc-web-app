@@ -6,7 +6,7 @@ After=multi-user.target
 Type=idle
 User=pi
 Group=users
-WorkingDirectory=/opt/tanc/
+WorkingDirectory=/opt/tanc/www/
 ExecStart=/usr/bin/php /opt/tanc/www/bin/queue-reader.php
 Restart=on-failure
 
