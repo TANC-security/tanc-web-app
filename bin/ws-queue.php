@@ -48,11 +48,44 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		 */
 	}
 
+	public function validateSession($sessid) {
+		$sfile = 'var/sess/sess_'.$sessid;
+		if (!file_exists($sfile)) {
+			var_dump($sfile);
+			return FALSE;
+		}
+		//session_start is too messed up to use in multi connection environment
+		$s    = file_get_contents($sfile);
+		$sarr = explode(';', $s);
+		foreach ($sarr as $_var) {
+			if (!strpos($_var, '|')) continue;
+			list($k, $v) = explode('|', $_var);
+			if ($k == '_touch') {
+				return (bool) intval($v) <= time() - 7200;
+			}
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * return session ID if session is valid,
+	 * false otherwise
+	 */
 	public function onHandshake(Aerys\Request $request, Aerys\Response $response) {
 		// Do eventual session verification and manipulate Response if needed to abort
+		$x = $request->getCookie('s');
+		if (!$this->validateSession($x) ) {
+			$response->setStatus(401);
+			return FALSE;
+		}
+		return $x;
 	}
 
 	public function onOpen(int $clientId, $handshakeData) {
+		if ($handshakeData == FALSE) {
+			return;
+		}
 		$this->clients[] = $clientId;
 		if ($this->lastMsg != '') {
 			$this->endpoint->send($this->lastMsg, $clientId);
