@@ -17,21 +17,29 @@ if ($beanstalkAddress == '') {
 
 $cnt=0;
 
-Amp\run(function () use ($metrofw, $beanstalkAddress) {
-	$client = new Amp\Beanstalk\BeanstalkClient($beanstalkAddress);
-
-	$client->watch('status');
+use Amp\Loop;
+Loop::run(function () use ($metrofw, $beanstalkAddress) {
+	$clientStatus = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress);
+	$clientStatus->watch('status');
 	echo "D/Queue: watching tube status ...\n";
-	Amp\repeat(function() use ($client, $metrofw){
+
+	$clientEvent = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress);
+	$clientEvent->watch('event');
+	echo "D/Queue: watching tube event ...\n";
+
+	//Amp\repeat(function() use ($clientStatus, $metrofw){
+	Loop::repeat(50,
+	function() use ($clientStatus, $clientEvent, $metrofw) {
 
 		try {
-			$promise = $client->reserve(0);
+			$promiseStatus = $clientStatus->reserve(0);
+			$promiseEvent  = $clientEvent->reserve(0);
 		} catch (Exception $e) {
 			if ($e instanceOf Amp\Beanstalk\DeadlineSoonException) {
 				//var_dump($e->getJob());
 			}
 		}
-		$promise->when( function($error, $result, $cbData) use ($client, $metrofw) {
+		$promiseStatus->onResolve( function($error, $result, $cbData) use ($clientStatus, $metrofw) {
 
 			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
 				return;
@@ -43,12 +51,13 @@ Amp\run(function () use ($metrofw, $beanstalkAddress) {
 			}
 
 			if (!$result) {
+				var_Dump($error);
 				echo "D/Job: no result\n";
 				return;
 			}
 
 			if ($result) {
-				echo "I/Job: RESERVED JOB: ".$result[0]."\n";
+				echo "I/Job: RESERVED STATUS JOB: ".$result[0]."\n";
 			}
 
 			try {
@@ -67,6 +76,66 @@ Amp\run(function () use ($metrofw, $beanstalkAddress) {
 				$response = _makeNew('response');
 
 				try {
+//					echo "I/Job: onRequest: ".print_r($request,1)."\n";
+					$metrofw->onRequest($request, $response);
+				} catch (\Error $t) {
+					var_dump($t);
+				} catch (\Exception $t) {
+					var_dump($t);
+				}
+				var_dump($response);
+
+				//do work here
+//				var_dump($result);
+				$k  = $clientStatus->delete($id);
+				//echo "I/Job: DELETING JOB: " . $id."\n";
+
+				$k->onResolve( function($err, $res) use ($clientStatus, $id) {
+					echo "I/Job: DELETED JOB: " . $id."\n";
+				});
+			} catch (Exception $e) {
+				var_dump($e->getMessage());
+			}
+		});
+
+		$promiseEvent->onResolve( function($error, $result, $cbData) use ($clientEvent, $metrofw) {
+
+			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
+				return;
+			}
+
+			if ($error instanceOf Amp\Beanstalk\DeadlineSoonException) {
+				var_dump( get_class($error) );
+				return;
+			}
+
+			if (!$result) {
+				var_Dump($error);
+				echo "D/Job: no result\n";
+				return;
+			}
+
+			if ($result) {
+				echo "I/Job: RESERVED EVENT JOB: ".$result[0]."\n";
+			}
+
+			try {
+				$id = $result[0];
+
+				$payload = json_decode($result[1], TRUE);
+		
+				$request = new Metrofw_Request();
+				$request->vars['payload'] = $payload;
+				$request->appName = 'panel';
+				$request->modName = 'main';
+				$request->actName = 'event';
+				$request->requestedUrl = '/panel/main/event';
+
+				_didef('request',   $request);
+				$response = _makeNew('response');
+
+				try {
+					//echo "I/Job: onRequest: ".print_r($request,1)."\n";
 					$metrofw->onRequest($request, $response);
 				} catch (\Error $t) {
 					var_dump($t);
@@ -74,19 +143,16 @@ Amp\run(function () use ($metrofw, $beanstalkAddress) {
 					var_dump($t);
 				}
 
-				//do work here
-//				var_dump($result);
-				$k  = $client->delete($id);
-				//echo "I/Job: DELETING JOB: " . $id."\n";
-
-				$k->when( function($err, $res) use ($client, $id) {
-					echo "I/Job: DELETED JOB: " . $id."\n";
+				$clientEvent->delete($id)->onResolve(
+					function($err, $res) use ($id) {
+						echo "I/Job: DELETED JOB: " . $id."\n";
 				});
+
 			} catch (Exception $e) {
 				var_dump($e->getMessage());
 			}
 		});
-	}, $msInterval=50);
+	});
 });
 
 
