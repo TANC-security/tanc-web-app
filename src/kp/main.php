@@ -31,6 +31,7 @@ class Kp_Main {
 
 	public function mainAction($response) {
 		$response->addTo('main', ['foo', 'bar']);
+		/*
 		$response->addTo('extraJs', "
 		<script type=\"text/javascript\">
 $(document).ready(function() {
@@ -50,13 +51,12 @@ $(document).ready(function() {
 	}
 	
 	$('.kp-container > button').on('click',function(e) {
-		kpbuf += e.target.value;
+		kpbuf += e.currentTarget.value;
 	
 		if (timeoutRef)  clearTimeout(timeoutRef);
 		timeoutRef = setTimeout(function() {
 			doneTyping();
 		}, to);
-//		$.ajax(burl+'kp/main/send/?k='+e.target.value);
 	});
 	function pollDisplay() {
 	try {
@@ -101,7 +101,13 @@ $(document).ready(function() {
 
 		conn.onmessage = function(e) {
 			//console.log(e.data);
-			var displayMsg   = e.data || '';
+			var packet = JSON.parse(e.data) || '';
+			if (packet.type == 'event') {
+				showEvent('Got ' + packet.qualifier + ' event code: ' +packet.code);
+				return;
+			}
+
+			var displayMsg   = packet.message || e.data || '';
 			var line1 = line2 = '';
 			for (i=0; i < 16; i++) {
 				line1 += displayMsg.charAt(i);
@@ -129,6 +135,9 @@ $(document).ready(function() {
 		setTimeout(onBadWs,3000);
 	}
 
+	function showEvent(msg) {
+		$('#content-main').prepend('<div class=\"alert alert-info\">'+msg+'<span class=\"dismiss\">x</span></div>');
+	}
 	function showDisplayError() {
 		if ($('.alert').length){
 			return;
@@ -136,14 +145,15 @@ $(document).ready(function() {
 		$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
 	}
 	function removeDisplayError() {
-		if ($('.alert').length){
-$('.alert').remove();
+		if ($('.alert-danger').length){
+$('.alert-danger').remove();
 		}
 	}
 
 });
 		</script>
 ");
+		 */
 	}
 
 
