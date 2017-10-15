@@ -19,11 +19,32 @@ use Amp\Loop;
 
 class MyAwesomeWebsocket implements Aerys\Websocket {
     private $endpoint;
-	public $clients;
-	public $lastMsg;
+	public  $clients;
+	public  $lastMsg;
 
 	public function onStart(Aerys\Websocket\Endpoint $endpoint) {
 		$this->endpoint = $endpoint;
+	}
+
+	public function blastAndSave($payload) {
+		$this->endpoint->broadcast(
+			json_encode(
+				$payload
+			)
+		);
+	}
+
+	public function sendDisplayMessage($message, $clientId=NULL) {
+		if ($clientId == NULL) {
+			$this->endpoint->broadcast(
+				json_encode(['type'=>'display', 'message'=>$message])
+			);
+		} else {
+			$this->endpoint->send(
+				json_encode(['type'=>'display', 'message'=>$message])
+				, $clientId
+			);
+		}
 	}
 
 	public function blast($msg) {
@@ -39,13 +60,7 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		}
 		 */
 
-		$this->endpoint->broadcast($msg);
-		/*
-		//TODO: use broadcast()
-		foreach ($this->clients as $_clientId) {
-			$this->endpoint->send($msg, $_clientId);
-		}
-		 */
+		$this->sendDisplayMessage($msg);
 	}
 
 	public function validateSession($sessid) {
@@ -88,7 +103,8 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		}
 		$this->clients[] = $clientId;
 		if ($this->lastMsg != '') {
-			$this->endpoint->send($this->lastMsg, $clientId);
+			$this->sendDisplayMessage($this->lastMsg, $clientId);
+//			$this->endpoint->send($this->lastMsg, $clientId);
 		}
 	}
 
@@ -109,27 +125,97 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 }
 
 
+/*
+class MySessionHandler implements SessionHandlerInterface
+{
+    private $savePath;
+
+    public function open($savePath, $sessionName)
+    {
+        $this->savePath = $savePath;
+        if (!is_dir($this->savePath)) {
+            mkdir($this->savePath, 0777);
+        }
+
+        return true;
+    }
+
+    public function close()
+    {
+        return true;
+    }
+
+    public function read($id)
+    {
+        return (string)@file_get_contents("$this->savePath/sess_$id");
+    }
+
+    public function write($id, $data)
+    {
+        return file_put_contents("$this->savePath/sess_$id", $data) === false ? false : true;
+    }
+
+    public function destroy($id)
+    {
+        $file = "$this->savePath/sess_$id";
+        if (file_exists($file)) {
+            unlink($file);
+        }
+
+        return true;
+    }
+
+    public function gc($maxlifetime)
+    {
+        foreach (glob("$this->savePath/sess_*") as $file) {
+            if (filemtime($file) + $maxlifetime < time() && file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+        return true;
+    }
+}
+ */
+
+
+/*
+$handler = new MySessionHandler();
+ini_set('session.use_cookies', '0');
+ini_set("session.use_cookies", 0);
+ini_set("session.use_only_cookies", 0);
+ini_set("session.use_trans_sid", 1);
+ini_set("session.cache_limiter", "");
+session_set_save_handler($handler, true);
+ */
+
 use Psr\Log\NullLogger;
 
-$beanstalkAddress = 'tcp://'.$beanstalkAddress.'?tube=display';
-Loop::run(function () use ($beanstalkAddress) {
-	$client = new Amp\Beanstalk\BeanstalkClient($beanstalkAddress);
+$myWs = new \MyAwesomeWebsocket();
+$websocket = \Aerys\websocket($myWs);
+$host = (new \Aerys\Host)->use($websocket);
+$host->expose('0.0.0.0', 8088);
+$server = \Aerys\initServer(new NullLogger, [$host], []);
+//yield $server->start();
+$server->start();
+
+
+
+//$beanstalkAddress = 'tcp://'.$beanstalkAddress.'?tube=display';
+Loop::run(function () use ($beanstalkAddress, $myWs) {
+	$client = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress.'?tube=display');
 	$client->watch('display');
 
-	$myWs = new \MyAwesomeWebsocket();
-	$websocket = \Aerys\websocket($myWs);
-	$host = (new \Aerys\Host)->use($websocket);
-	$host->expose('0.0.0.0', 8088);
-	$server = \Aerys\initServer(new NullLogger, [$host], []);
-	yield $server->start();
-
+	$clientEvent = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress.'?tube=event-frontend');
+	$clientEvent->watch('event-frontend');
 
 	echo "D/Queue: watching tube display ...\n";
 	Loop::repeat($msInterval=50,
-		function() use ($client, $myWs){
+		function() use ($client, $clientEvent, $myWs){
 
 		try {
-			$promise = $client->reserve(0);
+			$promise      = $client->reserve(0);
+			$promiseEvent = $clientEvent->reserve(0);
 		} catch (Exception $e) {
 			if ($e instanceOf Amp\Beanstalk\DeadlineSoonException) {
 				//var_dump($e->getJob());
@@ -176,6 +262,57 @@ Loop::run(function () use ($beanstalkAddress) {
 				//echo "I/Job: DELETING JOB: " . $id."\n";
 
 				$k->onResolve( function($err, $res) use ($client, $id) {
+					echo "I/Job: DELETED JOB: " . $id."\n";
+				});
+				/*
+				 */
+			} catch (Exception $e) {
+				var_dump($e->getMessage());
+			}
+		});
+
+		$promiseEvent->onResolve( function($error, $result) use ($clientEvent, $myWs) {
+
+			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
+				return;
+			}
+
+			if ($error instanceOf Amp\Beanstalk\DeadlineSoonException) {
+				var_dump( get_class($error) );
+				return;
+			}
+
+			if (!$result) {
+				echo "D/Job: no result\n";
+				return;
+			}
+
+			if ($result) {
+				echo "I/Job: RESERVED JOB: ".$result[0]."\n";
+			}
+
+			try {
+				$id = $result[0];
+
+				$payload = json_decode($result[1], TRUE);
+				echo "D/E: got job\n";
+				print_r($payload);
+		
+				try {
+					$myWs->blastAndSave($payload);
+				} catch (\Error $t) {
+					var_dump($t);
+				} catch (\Exception $t) {
+					var_dump($t);
+				}
+
+				//do work here
+//				var_dump($result);
+				$k  = $clientEvent->delete($id);
+//				$k  = $client->release($id);
+				//echo "I/Job: DELETING JOB: " . $id."\n";
+
+				$k->onResolve( function($err, $res) use ($clientEvent, $id) {
 					echo "I/Job: DELETED JOB: " . $id."\n";
 				});
 				/*
