@@ -23,6 +23,10 @@ class Panel_Main {
 	 */
 	public function addDescription($payload) {
 		switch ($payload['code']) {
+			case '302':
+				$payload['description'] = ucfirst($payload['qualifier']) . ' Trouble: Low Battery';
+				return;
+
 			case '441':
 				if ($payload['qualifier'] == 'new') {
 					$payload['description'] = 'User '.$payload['user_zone']. ' Armed stay';
