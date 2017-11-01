@@ -20,11 +20,11 @@ $cnt=0;
 use Amp\Loop;
 Loop::run(function () use ($metrofw, $beanstalkAddress) {
 	$clientStatus = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress);
-	$clientStatus->watch('status');
+	yield $clientStatus->watch('status');
 	echo "D/Queue: watching tube status ...\n";
 
 	$clientEvent = new Amp\Beanstalk\BeanstalkClient('tcp://'.$beanstalkAddress);
-	$clientEvent->watch('event');
+	yield $clientEvent->watch('event');
 	echo "D/Queue: watching tube event ...\n";
 
 	//Amp\repeat(function() use ($clientStatus, $metrofw){
@@ -39,7 +39,8 @@ Loop::run(function () use ($metrofw, $beanstalkAddress) {
 				//var_dump($e->getJob());
 			}
 		}
-		$promiseStatus->onResolve( function($error, $result, $cbData) use ($clientStatus, $metrofw) {
+
+		$promiseStatus->onResolve( function($error, $result) use ($clientStatus, $metrofw) {
 
 			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
 				return;
@@ -98,7 +99,7 @@ Loop::run(function () use ($metrofw, $beanstalkAddress) {
 			}
 		});
 
-		$promiseEvent->onResolve( function($error, $result, $cbData) use ($clientEvent, $metrofw) {
+		$promiseEvent->onResolve( function($error, $result) use ($clientEvent, $metrofw) {
 
 			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
 				return;
