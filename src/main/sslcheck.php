@@ -55,11 +55,41 @@ class Main_Sslcheck {
 		$devicecert = $this->signDeviceCert($csr, $privkey, $rootcert);
 		$response->addTo('certs', $devicecert);
 		if ($devicecert !== FALSE) {
-			$f = fopen('etc/ssl/'.$hostname.'.crt', 'w');
+			$f = fopen('etc/ssl/tanc.vhost.crt', 'w');
 			fputs($f, $devicecert);
 			fclose($f);
 		}
+
+		//$this->enableSslHost($response);
 		return;
+	}
+
+	/**
+	 * Copy etc/ssl/tanc.vhost.ssl.conf.tpl  to etc/nginx/tanc.vhost.ssl.conf
+	 * restart nginx
+	 */
+	public function enableSslHost($response) {
+		$source = 'etc/ssl/tanc.vhost.ssl.conf.tpl';
+		$target = 'etc/nginx/tanc.vhost.ssl.conf';
+
+		$retvar = 0;
+		$output = [];
+		exec('cp '.$source.' '.$target);
+		exec('sed -ie \'s/\$ROOT/\/app\/tanc-webapp\//\' '.$target);
+		exec('sed -ie \'s/\$HOST_NAME/'. str_replace('.', '\.', $_SERVER['SERVER_NAME']).'/\' '.$target);
+		$response->addTo('template-copied', $retvar);
+		if ($retvar) {
+			throw new \Exception("Cannot copy nginx ssl vhost template");
+		}
+
+		$retvar = 0;
+		$output = [];
+		exec('nginx -t', $output, $retvar);
+		$response->addTo('nginx-restart', $retvar);
+		if ($retvar) {
+			throw new \Exception("Cannot verify nginx config syntax.");
+		}
+
 	}
 
 	public function dlrootAction($reqeuest, $response, $kernel) {
