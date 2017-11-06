@@ -91,7 +91,7 @@ $(document).ready(function(){
 	}
 	store.dispatch({
 		'type':'SSL_CHECK_FAILED',
-		'text': 'Your connection is not secure, it is advisable to enable SSL by clicking <a href="#" class="create-ssl" style="color:white;">here</a>.'
+		'text': 'Your connection is not secure, it is advisable to enable SSL by clicking <a href="#" class="create-ssl" style="font-weight:bold;text-decoration:underline;">here</a>.'
 	});
 
 	function hideDialog() {
@@ -123,7 +123,7 @@ $(document).ready(function(){
 			text: message,
 			type: 'error',
 			hide: false,
-			styling: 'bootstrap3'
+//			styling: 'bootstrap3'
 		});
 	}
 	function hideSSLFailedNotice() {
