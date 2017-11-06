@@ -102,8 +102,26 @@ class Main_Sslcheck {
 	}
 
 	public function makeDeviceCsr($subject, $hostname, $rootkey) {
+		$sanList = array();
+		//get existing subjectAltName
+		if (file_exists('./etc/ssl/openssl.cnf.1')) {
+			$x = explode("\n", trim(file_get_contents('./etc/ssl/openssl.cnf.1')));
+			$san = array_pop($x);
+			$x = explode('=', $san);
+			$sanList = explode(',', $x[1]);
+		}
+		//is IP?
+		if (intval($hostname)) {
+			$recentSan = 'IP:'.$hostname;
+		} else {
+			$recentSan = 'DNS:'.$hostname;
+		}
+
+		if (!in_array($recentSan, $sanList)) {
+			$sanList[] = $recentSan;
+		}
 		$config = file_get_contents('./etc/ssl/openssl.cnf');
-		$config .= "\nreq_extensions = v3_req\n[v3_req]subjectAltName = @SAN\n[SAN]\nsubjectAltName=DNS:".$hostname;
+		$config .= "\nreq_extensions = v3_req\n[v3_req]\nsubjectAltName = @SAN\n[SAN]\nsubjectAltName=".implode(',', $sanList);
 		file_put_contents('./etc/ssl/openssl.cnf.1', $config);
 		//openssl req -new -key selfsignwithus_root_private-4.key -nodes -subj '/CN=www.example.com' -out selfsignwithus_root_device_csr.pem
 		//$command = 'openssl req -new -key /dev/stdin -nodes -subj '.escapeshellarg($subject).' -config <(cat /etc/ssl/openssl.cnf <(printf "req_extensions = v3_req\n[SAN]\nsubjectAltName=DNS:192.168.1.98")) -reqexts SAN -extensions SAN';
