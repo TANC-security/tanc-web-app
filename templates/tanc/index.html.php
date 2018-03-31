@@ -230,6 +230,7 @@
     <script src="<?php echo m_turl();?>js/custom.js"></script>
     <script src="<?php echo m_turl();?>scripts/form.js"></script>
     <script src="<?php echo m_turl();?>scripts/main.js" type="text/javascript"></script>
+    <script src="<?php echo m_turl();?>scripts/beep.js" type="text/javascript"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
 
