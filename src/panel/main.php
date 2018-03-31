@@ -23,9 +23,22 @@ class Panel_Main {
 	 */
 	public function addDescription($payload) {
 		switch ($payload['code']) {
+			case '0132':
+			case '132':
+			case  132:
+				$payload['description'] = ucfirst($payload['qualifier']) . ' Zone '.$payload['user_zone'].' ALARM Away';
+				break;
+			case '0134':
+			case '134':
+			case  134:
+				$payload['description'] = ucfirst($payload['qualifier']) . ' Zone '.$payload['user_zone'].' ALARM Stay';
+				break;
+			case '408':
+				$payload['description'] = ucfirst($payload['qualifier']) . ' Quick Arm Stay';
+				break;
 			case '302':
 				$payload['description'] = ucfirst($payload['qualifier']) . ' Trouble: Low Battery';
-				return;
+				break;
 
 			case '441':
 				if ($payload['qualifier'] == 'new') {
@@ -59,7 +72,7 @@ class Panel_Main {
 		return $beanstalk->put(
 		    23, // Give the job a priority of 23.
 		    0,  // Do not wait to put job into the ready queue.
-		    10, // Give the job 10 sec to run.
+		    0,  // Give the job 0 sec to run.
 		    json_encode($payload)
 		);
 		
