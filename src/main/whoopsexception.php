@@ -5,6 +5,7 @@ class Main_Whoopsexception {
 		$run     = new Whoops\Run;
 		if ($request->isAjax) {
 			$handler = new Whoops\Handler\JsonResponseHandler;
+			$handler->addTraceToOutput(true);
 		} else {
 			$handler = new Whoops\Handler\PrettyPageHandler;
 			$handler->setPageTitle("errorWhoops! There was a problem.");
