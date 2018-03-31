@@ -1,10 +1,22 @@
 var eventList = [];
+var beep;
 $(document).ready(function() {
 
 	var burl = $('body').data('base-url');
 	var kpbuf = '';
 	var timeoutRef;
-	var to = 800;
+	var to = 650;
+
+
+	beep = function(count) {
+		count = parseInt(count);
+		for (var x=0; x<count; x++) {
+			setTimeout(function() {
+				snd.play();
+			}, 400 * (0+x)+1);
+		}
+	}
+
 	var doneTyping = function() {
 		
 		if (!timeoutRef) return;
@@ -12,7 +24,12 @@ $(document).ready(function() {
 		timoutRef = null;
 		var bufcopy = kpbuf;
 		kpbuf = '';
-		$.ajax(burl+'kp/main/send/?k='+encodeURIComponent(bufcopy));
+		beepcount = bufcopy.length
+		$.ajax(burl+'kp/main/send/?k='+encodeURIComponent(bufcopy))
+		.done( function(data) {
+			beep(beepcount);
+//			console.log(data);
+		});
 	}
 	
 	$('.kp-container > button').on('click',function(e) {
@@ -31,15 +48,14 @@ $(document).ready(function() {
 	} catch (e) {
 		setTimeout(onBadWs,3000);
 	}
-
-	function showDisplayError() {
-		if ($('.alert-danger').length){
-			return;
-		}
-		$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
-	}
-
 });
+
+function showDisplayError() {
+	if ($('.alert-danger').length){
+		return;
+	}
+	$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
+}
 
 function showEvent(packet) {
 //	$('#content-main').prepend('<div class=\"alert alert-info\">'+msg+'<span class=\"dismiss\">x</span></div>');
@@ -163,6 +179,10 @@ function showDisplayMessage(packet) {
 	$('.kp-view').html(line1+'<br/>'+line2);
 	removeDisplayError();
 
+	if (packet['beeps']) {
+		count = parseInt(packet['beeps']);
+		beep(count);
+	}
 }
 
 function removeDisplayError() {
