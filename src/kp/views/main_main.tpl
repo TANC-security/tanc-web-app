@@ -8,11 +8,11 @@ WAIT
 <button value="1">1<br/><span class="subtitle">OFF</span></button>
 <button value="2">2<br/><span class="subtitle">AWAY</span></button>
 <button value="3">3<br/><span class="subtitle">STAY</span></button>
-<button vaue="B"><i class="fa fa-fire"></i></button>
+<button value="B"><i class="fa fa-fire"></i></button>
 <button value="4">4<br/><span class="subtitle">MAX</span></button>
 <button value="5">5<br/><span class="subtitle">TEST</span></button>
 <button value="6">6<br/><span class="subtitle subtitle-small">BYPASS</span></button>
-<button value="C"><i class="fa fa-fire"></i></button>
+<button value="C"><i class="fa fa-bell"></i></button>
 <button value="7">7<br/><span class="subtitle subtitle-small">INSTANT</span></button>
 <button value="8">8<br/><span class="subtitle">CODE</span></button>
 <button value="9">9<br/><span class="subtitle">CHIME</span></button>
