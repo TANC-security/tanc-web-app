@@ -34,20 +34,20 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		);
 	}
 
-	public function sendDisplayMessage($message, $clientId=NULL) {
+	public function sendDisplayMessage($message, $clientId=NULL, $beeps=0) {
 		if ($clientId == NULL) {
 			$this->endpoint->broadcast(
-				json_encode(['type'=>'display', 'message'=>$message])
+				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps])
 			);
 		} else {
 			$this->endpoint->send(
-				json_encode(['type'=>'display', 'message'=>$message])
+				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps])
 				, $clientId
 			);
 		}
 	}
 
-	public function blast($msg) {
+	public function blast($msg, $beeps=0) {
 		if ($this->lastMsg == $msg) {
 			return;
 			//nothing new
@@ -60,7 +60,7 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		}
 		 */
 
-		$this->sendDisplayMessage($msg);
+		$this->sendDisplayMessage($msg, NULL, $beeps);
 	}
 
 	public function validateSession($sessid) {
@@ -247,7 +247,7 @@ Loop::run(function () use ($beanstalkAddress, $myWs) {
 				$status = json_decode($result[1], TRUE);
 		
 				try {
-					$myWs->blast(print_r($status['msg'], 1));
+					$myWs->blast(print_r($status['msg'], 1), @$status['beep']);
 					echo "D/WS: blast msg: ".$status['msg']." .\n";
 				} catch (\Error $t) {
 					var_dump($t);
