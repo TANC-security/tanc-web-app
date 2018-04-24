@@ -42,7 +42,10 @@ gulp.task('plugins', function() {
 	'./bower_components/gentelella/vendors/jquery/dist/jquery.js',
 	'./bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.js',
 	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
+	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
+	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.mobile.js',
 	'./bower_components/redux/index.js',
+	'./bower_components/vue/dist/vue.js',
 	SRC+'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js',
 	])
 	.pipe(debug({title: 'plugins-js:'}))
@@ -89,6 +92,9 @@ gulp.task('plugins-css', function() {
       SRC+'vendors/iCheck/skins/flat/green.css',
       SRC+'vendors/animate.css/animate.css',
       SRC+'vendors/pnotify/dist/pnotify.css',
+      SRC+'vendors/pnotify/dist/pnotify.brighttheme.css',
+      SRC+'vendors/pnotify/dist/pnotify.buttons.css',
+      SRC+'vendors/pnotify/dist/pnotify.mobile.css',
    ])
   .pipe(debug({title: 'plugins-css:'}))
       .pipe(concat('plugins-css.css'))

@@ -34,20 +34,20 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		);
 	}
 
-	public function sendDisplayMessage($message, $clientId=NULL, $beeps=0) {
+	public function sendDisplayMessage($message, $clientId=NULL, $beeps=0, $armed=false) {
 		if ($clientId == NULL) {
 			$this->endpoint->broadcast(
-				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps])
+				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps, 'armed'=>$armed])
 			);
 		} else {
 			$this->endpoint->send(
-				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps])
+				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps, 'armed'=>$armed])
 				, $clientId
 			);
 		}
 	}
 
-	public function blast($msg, $beeps=0) {
+	public function blast($msg, $beeps=0, $armed=false) {
 		if ($this->lastMsg == $msg) {
 			return;
 			//nothing new
@@ -60,7 +60,7 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		}
 		 */
 
-		$this->sendDisplayMessage($msg, NULL, $beeps);
+		$this->sendDisplayMessage($msg, NULL, $beeps, $armed);
 	}
 
 	public function validateSession($sessid) {
@@ -245,9 +245,16 @@ Loop::run(function () use ($beanstalkAddress, $myWs) {
 				$id = $result[0];
 
 				$status = json_decode($result[1], TRUE);
-		
+
+				$armed = 'disarmed';
+				if (@$status['ARMED_AWAY'] == 'true') {
+					$armed = 'away';
+				}
+				if (@$status['ARMED_STAY'] == 'true') {
+					$armed = 'stay';
+				}
 				try {
-					$myWs->blast(print_r($status['msg'], 1), @$status['beep']);
+					$myWs->blast(print_r($status['msg'], 1), @$status['beep'], $armed);
 					echo "D/WS: blast msg: ".$status['msg']." .\n";
 				} catch (\Error $t) {
 					var_dump($t);

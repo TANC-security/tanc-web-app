@@ -30,7 +30,7 @@ class Kp_Main {
 
 
 	public function mainAction($response) {
-		$response->addTo('main', ['foo', 'bar']);
+//		$response->addTo('main', ['foo', 'bar']);
 		/*
 		$response->addTo('extraJs', "
 		<script type=\"text/javascript\">

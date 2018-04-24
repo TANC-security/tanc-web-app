@@ -3,7 +3,7 @@ YOU
 <br/>
 WAIT
 </div>
-<div class="kp-container">
+<div class="kp-container kp-container_full">
 <button value="A"><i class="fa fa-ambulance"></i></button>
 <button value="1">1<br/><span class="subtitle">OFF</span></button>
 <button value="2">2<br/><span class="subtitle">AWAY</span></button>

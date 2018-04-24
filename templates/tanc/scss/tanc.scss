@@ -49,11 +49,17 @@
     display: inline-block;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
-    width: calc(25% - 10px);
     height: 80px;
     margin: 5px;
     float: left;
     font-size:24px;
+}
+.kp-container > button{
+    width: calc(33.3% - 10px);
+}
+
+.kp-container_full > button{
+    width: calc(25% - 10px);
 }
 .kp-view {
   width:100%;
@@ -89,4 +95,13 @@
 //make alert bigger, white text on colored bg hard to read
 #content-sparkmsg {
 	font-size:120%;
+}
+
+.statuspanel__btn {
+	min-width: 9rem;
+	min-width: 5em;
+}
+
+.statuspanel .locked {
+	color:#DBA900;
 }

@@ -173,7 +173,7 @@
 
     <!-- jQuery -->
     <!-- Bootstrap -->
-    <script src="<?php echo m_turl();?>js/plugins.js"></script>
+    <script src="<?php echo m_turl();?>js/plugins.min.js"></script>
 
     <script src="<?php echo m_turl();?>scripts/healthcheck.js"></script>
     <script src="<?php echo m_turl();?>scripts/sslcheck.js"></script>
