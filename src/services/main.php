@@ -88,7 +88,7 @@ showKpDebug(encodeURIComponent(bufcopy)) ;
 	
 
 	$('.datatable__refresh').on('click',function(e) {
-		var button = $(e.target);
+		var button = $(e.currentTarget);
 		var svc = button.data('svc');
 		if (svc == undefined) {
 			return false;
