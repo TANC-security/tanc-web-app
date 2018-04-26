@@ -80,22 +80,22 @@
 
 
 <div class="kp-container">
-<button class="btn btn-default" v-if="isFullMode == true" value="A"><i class="fa fa-ambulance"></i></button>
-<button class="btn btn-default" @click="setCode" value="1">1<br/><span v-if="isFullMode == true" class="subtitle">OFF</span></button>
-<button class="btn btn-default" @click="setCode" value="2">2<br/><span v-if="isFullMode == true" class="subtitle">AWAY</span></button>
-<button class="btn btn-default" @click="setCode" value="3">3<br/><span v-if="isFullMode == true" class="subtitle">STAY</span></button>
-<button class="btn btn-default" v-if="isFullMode == true" value="B"><i class="fa fa-fire"></i></button>
-<button class="btn btn-default" @click="setCode" value="4">4<br/><span v-if="isFullMode == true" class="subtitle">MAX</span></button>
-<button class="btn btn-default" @click="setCode" value="5">5<br/><span v-if="isFullMode == true" class="subtitle">TEST</span></button>
-<button class="btn btn-default" @click="setCode" value="6">6<br/><span v-if="isFullMode == true" class="subtitle subtitle-small">BYPASS</span></button>
-<button class="btn btn-default" v-if="isFullMode == true" value="C"><i class="fa fa-bell"></i></button>
-<button class="btn btn-default" @click="setCode" value="7">7<br/><span v-if="isFullMode == true" class="subtitle subtitle-small">INSTANT</span></button>
-<button class="btn btn-default" @click="setCode" value="8">8<br/><span v-if="isFullMode == true" class="subtitle">CODE</span></button>
-<button class="btn btn-default" @click="setCode" value="9">9<br/><span v-if="isFullMode == true" class="subtitle">CHIME</span></button>
-<button class="btn btn-default" v-if="isFullMode == true" value="D"><i class="fa fa-wheelchair"></i></button>
-<button class="btn btn-default" @click="setCode" value="*">*</button>
-<button class="btn btn-default" @click="setCode" value="0">0</button>
-<button class="btn btn-default" @click="setCode" value="#">#</button>
+<button class="btn btn-default btn-round" v-if="isFullMode == true" value="A"><i class="fa fa-ambulance"></i></button>
+<button class="btn btn-default btn-round" @click="setCode" value="1">1<br/><span v-if="isFullMode == true" class="subtitle">OFF</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="2">2<br/><span v-if="isFullMode == true" class="subtitle">AWAY</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="3">3<br/><span v-if="isFullMode == true" class="subtitle">STAY</span></button>
+<button class="btn btn-default btn-round" v-if="isFullMode == true" value="B"><i class="fa fa-fire"></i></button>
+<button class="btn btn-default btn-round" @click="setCode" value="4">4<br/><span v-if="isFullMode == true" class="subtitle">MAX</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="5">5<br/><span v-if="isFullMode == true" class="subtitle">TEST</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="6">6<br/><span v-if="isFullMode == true" class="subtitle subtitle-small">BYPASS</span></button>
+<button class="btn btn-default btn-round" v-if="isFullMode == true" value="C"><i class="fa fa-bell"></i></button>
+<button class="btn btn-default btn-round" @click="setCode" value="7">7<br/><span v-if="isFullMode == true" class="subtitle subtitle-small">INSTANT</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="8">8<br/><span v-if="isFullMode == true" class="subtitle">CODE</span></button>
+<button class="btn btn-default btn-round" @click="setCode" value="9">9<br/><span v-if="isFullMode == true" class="subtitle">CHIME</span></button>
+<button class="btn btn-default btn-round" v-if="isFullMode == true" value="D"><i class="fa fa-wheelchair"></i></button>
+<button class="btn btn-default btn-round" @click="setCode" value="*">*</button>
+<button class="btn btn-default btn-round" @click="setCode" value="0">0</button>
+<button class="btn btn-default btn-round" @click="setCode" value="#">#</button>
 </div>
 
 
