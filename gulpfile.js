@@ -8,7 +8,7 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     browserSync = require('browser-sync').create();
 
-var DEST = 'templates/tanc';
+var DEST = 'templates/tanc/';
 var SRC  = 'bower_components/gentelella/';
 
 gulp.task('scripts', function() {
@@ -37,6 +37,10 @@ gulp.task('project-scripts', function() {
 */
 
 
+/*
+ * removing redux to refactor into vue.js
+	'./bower_components/redux/index.js',
+	*/
 gulp.task('plugins', function() {
     return gulp.src([
 	'./bower_components/gentelella/vendors/jquery/dist/jquery.js',
@@ -44,7 +48,6 @@ gulp.task('plugins', function() {
 	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
 	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
 	'./bower_components/gentelella/vendors/pnotify/dist/pnotify.mobile.js',
-	'./bower_components/redux/index.js',
 	'./bower_components/vue/dist/vue.js',
 	SRC+'vendors/bootstrap-progressbar/bootstrap-progressbar.min.js',
 	])

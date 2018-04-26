@@ -2,74 +2,7 @@ $(document).ready(function(){
 /*
  * <a href="/tanc-webapp/templates/selfsignwithus_root_certificate.crt">Download cert</a>
  * */
-	var sslReducer = function(state, action) {
-		if (typeof state === 'undefined') {
-			return {
-				sslCheckFailed:false,
-				generatingSSL:false,
-				notice:undefined,
-				dialog:undefined,
-			}
-		}
 
-		if (action.type == 'SSL_CHECK_FAILED') {
-			return Object.assign( {}, state, {
-				sslCheckFailed:true,
-				notice: { 'text': action.text || 'default text' },
-			}
-			);
-		}
-		if (action.type == 'SSL_NOTICE_HIDE') {
-			return Object.assign( {}, state, {
-				notice: undefined,
-			}
-			);
-		}
-
-		if (action.type == 'GENERATE_SSL') {
-			return Object.assign( {}, state, {
-			generatingSSL: true,
-			dialog: { 'text': action.text || 'default text' },
-			}
-			);
-		}
-
-		if (action.type == 'SSL_FINISHED') {
-			return Object.assign( {}, state, {
-			generatingSSL: false,
-			dialog: { 'text': action.text, 'props': action.props},
-			}
-			);
-		}
-
-		if (action.type == 'SSL_ERROR') {
-			return Object.assign( {}, state, {
-			generatingSSL: false,
-			dialog: { 'text': 'error creating certificate', 'props': {'closeButton':true}},
-			}
-			);
-		}
-	}
-	var createStore = Redux.createStore;
-	var store = createStore(sslReducer)
-	let previousDialog = {'text':''};
-
-	var render = function() {
-		var state = store.getState();
-
-		if (state.notice) {
-			showSSLFailedNotice(state.notice.text);
-		} else {
-			hideSSLFailedNotice();
-		}
-		//only render new dialog if text has changed
-		if (state.dialog && (state.dialog.text != previousDialog.text)) {
-			showDialog(state.dialog.text, state.dialog.props);
-			previousDialog = state.dialog;
-		} else {
-			hideDialog();
-		}
-	}
 	var logger = function() {
 		console.log(store.getState());
 	}
@@ -77,9 +10,6 @@ $(document).ready(function(){
 	//$_ is prefix for visual components;
 	var $_notice;
 	var $_diag;
-	store.subscribe(render);
-	store.subscribe(logger);
-	render();
 
 	var burl = $('body').data('base-url');
 	var https = location.href.substr(0, 5);
@@ -89,10 +19,7 @@ $(document).ready(function(){
 	if (https.indexOf('10.10.10.10') > 0) {
 		return;
 	}
-	store.dispatch({
-		'type':'SSL_CHECK_FAILED',
-		'text': 'Your connection is not secure, it is advisable to enable SSL by clicking <a href="#" class="create-ssl" style="font-weight:bold;text-decoration:underline;">here</a>.'
-	});
+	showSSLFailedNotice('Your connection is not secure, it is advisable to enable SSL by clicking <a href="#" class="create-ssl" style="font-weight:bold;text-decoration:underline;">here</a>.');
 
 	function hideDialog() {
 		if ($_diag) {
@@ -122,8 +49,9 @@ $(document).ready(function(){
 			title: 'SSL Warning',
 			text: message,
 			type: 'error',
+			pause: false,
 			hide: false,
-//			styling: 'bootstrap3'
+			styling: 'bootstrap3'
 		});
 	}
 	function hideSSLFailedNotice() {
@@ -141,11 +69,11 @@ $(document).ready(function(){
 			crossDomain: true,
 			jsonpCallback: 'sslcheck'
 		}).fail(function(xhr, textStatus, error) {
-			store.dispatch({'type':'SSL_NOTICE_HIDE'});
+			hideSSLFailedNotice()
 			hideSSLFailedNotice( );
 			//gen new root cert
 			// create modal
-			store.dispatch({'type':'GENERATE_SSL', 'text':"Setting up SSL"});
+			showDialog("Setting up SSL");
 
 			window.setTimeout(
 				genCert, 1500
@@ -162,11 +90,11 @@ $(document).ready(function(){
 			//display cert for download
 			var burls = 'https' + burl.substr(4);
 			console.log(burl);
-			store.dispatch({
-				'type':'SSL_FINISHED',
-				'text': '<h3>Done</h3><ol><li>Save your certificate <a href="'+burl+'main/sslcheck/dlroot">here</a></li><li>Import the certificate into your browser.</li><li>Continue on to the secure page by clicking <a href="'+burls+'">here</a>.</li></ol>',
-				'props': {'spinner': false},
-			});
+			showDialog(
+				'<h3>Done</h3><ol><li>Save your certificate <a href="'+burl+'main/sslcheck/dlroot">here</a></li><li>Import the certificate into your browser.</li><li>Continue on to the secure page by clicking <a href="'+burls+'">here</a>.</li></ol>',
+				{'spinner': false}
+			);
+
 		}).fail(function(data, textStatus, xhr) {
 			msg = data['user-message'] || null;
 			store.dispatch({'type':'SSL_ERROR', 'text':msg});
