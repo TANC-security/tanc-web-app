@@ -40,7 +40,7 @@ function wsDisplay2(app) {
 var app = new Vue({
 	el: '#main_main',
 	data: {
-		message: 'Hello Vue!',
+		//message: 'Hello Vue!',
 		isFullMode: false,
 		hidden: true,
 		state: 'initial',
@@ -65,7 +65,7 @@ var app = new Vue({
 			if (this.isArmed) {
 				return '<i class="fa fa-lock fa-3x locked"></i> ARMED';
 			}
-			return '';
+			return 'Determining status ...';
 		},
 		'askCode': {
 			get: function() {

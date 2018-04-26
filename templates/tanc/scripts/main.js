@@ -32,7 +32,7 @@ $(document).ready(function() {
 		});
 	}
 	
-	$('.kp-container > button').on('click',function(e) {
+	$('.kp-container_full > button').on('click',function(e) {
 		kpbuf += e.currentTarget.value;
 	
 		if (timeoutRef)  clearTimeout(timeoutRef);
