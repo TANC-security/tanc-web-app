@@ -1,12 +1,19 @@
 #!/bin/bash
+
+if [ -z $BASH ]
+then
+	echo "must run with bash and not sh."
+	exit 1
+fi
 REV=$1
 if [ -z $REV ]
 then
 	echo "must supply revision as argument ./package-tar.sh 0.1.2"
-	exit
+	exit 1
 fi
 PACKAGE_NAME=tanc-web-app
 PACKAGE_ROOT=build/tar/$PACKAGE_NAME
+
 
 rm -Rf $PACKAGE_ROOT/
 mkdir -p $PACKAGE_ROOT/opt/tanc/www/
