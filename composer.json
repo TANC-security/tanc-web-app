@@ -1,6 +1,7 @@
 {
     "name": "TANC Home Security",
     "license": "MIT",
+    "version": "0.7.0",
     "authors": [
         {
             "name": "Mark Kimsal",
@@ -12,11 +13,11 @@
             "type": "vcs",
             "url": "https://github.com/metrophp/metrodb.git"
         },
-		{
+        {
             "type": "vcs",
             "url": "https://github.com/metrophp/metrodi.git"
         },
-		{
+        {
             "type": "vcs",
             "url": "https://github.com/metrophp/metrou.git"
         },
