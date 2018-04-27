@@ -1,4 +1,4 @@
-
+$kpcolor: #73879C;
 .icon-connected{
 	position:absolute;
 	right:0;
@@ -56,6 +56,7 @@
 }
 .kp-container > button{
     width: calc(33.3% - 10px);
+    color:$kpcolor;
 }
 
 .kp-container_full > button{
@@ -67,8 +68,9 @@
   font-size:220%;
   font-family: "LCD", monospace;
   font-variant: small-caps;
-  padding: 0.2em 0.75em;
   font-weight: 700;
+  color:$kpcolor;
+  padding: 0.2em 0.75em;
 }
 .kp-container span.subtitle {
   font-size:50%;
