@@ -82,6 +82,16 @@ var app = new Vue({
 			}
 		}
 	},
+	watch: {
+		state: function(newval, oldval) {
+			var body = document.getElementsByTagName("BODY")[0];
+			if (newval == 'away' || newval == 'stay') {
+				body.classList.add('armed');
+			} else {
+				body.classList.remove('armed');
+			}
+		}
+	},
 	methods: {
 		'performAction': function(action) {
 			this.action = action;

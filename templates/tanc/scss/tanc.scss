@@ -104,6 +104,23 @@ $kpcolor: #73879C;
 	min-width: 5em;
 }
 
-.statuspanel .locked {
+.statuspanel {
+	font-size:200%;
+}
+.statuspanel i.locked {
 	color:#DBA900;
+}
+
+$armedbg: #cadec9;
+body.armed .container.body .right_col {
+	background-color: $armedbg;
+}
+body.armed .nav_menu {
+	background-color: darken($armedbg, 15%);
+}
+
+body.armed {
+	.top_nav .nav > li > a:focus, .top_nav .nav > li > a:hover, .top_nav .nav .open > a, .top_nav .nav .open > a:focus, .top_nav .nav .open > a:hover {
+	    background: darken($armedbg, 33%);
+	}
 }
