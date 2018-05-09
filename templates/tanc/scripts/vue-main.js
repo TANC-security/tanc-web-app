@@ -60,10 +60,10 @@ var app = new Vue({
 		},
 		'statusMessage': function() {
 			if (this.isDisarmed) {
-				return '<i class="fa fa-unlock fa-3x"></i> Currently disarmed';
+				return '<i class="fa fa-unlock fa-3x"></i><br/>Currently disarmed';
 			}
 			if (this.isArmed) {
-				return '<i class="fa fa-lock fa-3x locked"></i> ARMED';
+				return '<i class="fa fa-lock fa-3x locked"></i><br/>ARMED';
 			}
 			return 'Determining status ...';
 		},
