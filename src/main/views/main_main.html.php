@@ -55,10 +55,10 @@
 		<div class="card x_panel">
 			<div class="card-block card-body x_content">
 				<div class="row-fluid">
-					<div class="col-xs-8">
+					<div class="col-xs-7 col-sm-8">
 						<p>Activates doors, windows, and internal motion sensors.</p>
 					</div>
-					<div class="col-xs-4">
+					<div class="col-xs-5 col-sm-4">
 						<button v-on:click="performAction('away');" class="btn btn-lg statuspanel__btn" :disabled="isArmed" v-bind:class="{'btn-primary':isDisarmed}" v-bind:class="{disabled:isarmed}"><i class="fa fa-car"></i> Away</button>
 					</div>
 				</div>
@@ -70,10 +70,10 @@
 		<div class="card x_panel ">
 			<div class="card-block card-body x_content">
 				<div class="row-fluid">
-					<div class="col-xs-8">
+					<div class="col-xs-7 col-sm-8">
 						<p>Activates doors and windows.</p>
 					</div>
-					<div class="col-xs-4">
+					<div class="col-xs-5 col-sm-4">
 						<button v-on:click="performAction('stay');" class="btn btn-lg statuspanel__btn" :disabled="isArmed" v-bind:class="{'btn-primary':isDisarmed}" v-bind:class="{disabled:isArmed}"><i class="fa fa-home"></i> Stay</button>
 					</div>
 
