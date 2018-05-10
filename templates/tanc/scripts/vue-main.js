@@ -86,8 +86,14 @@ var app = new Vue({
 		state: function(newval, oldval) {
 			var body = document.getElementsByTagName("BODY")[0];
 			if (newval == 'away' || newval == 'stay') {
+				body.classList.remove('disarmed');
 				body.classList.add('armed');
-			} else {
+			} else if (newval != '') {
+				body.classList.remove('disarmed');
+				body.classList.remove('armed');
+			}
+			if(newval == 'disarmed') {
+				body.classList.add('disarmed');
 				body.classList.remove('armed');
 			}
 		}
