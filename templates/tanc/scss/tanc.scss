@@ -112,15 +112,30 @@ $kpcolor: #73879C;
 }
 
 $armedbg: #cadec9;
-body.armed .container.body .right_col {
-	background-color: $armedbg;
-}
-body.armed .nav_menu {
-	background-color: darken($armedbg, 15%);
-}
+$generic-border: #E6E9ED;
+body.disarmed {
+	.container.body .right_col {
+		background: repeating-linear-gradient(-45deg, #f3f2f2, #efefef 5px, #fff 5px, #ccc 10px);
+	}
 
+}
 body.armed {
+	.container.body .right_col {
+		background-color: $armedbg;
+	}
+	.nav_menu {
+		background-color: darken($armedbg, 15%);
+	}
+
 	.top_nav .nav > li > a:focus, .top_nav .nav > li > a:hover, .top_nav .nav .open > a, .top_nav .nav .open > a:focus, .top_nav .nav .open > a:hover {
 	    background: darken($armedbg, 33%);
+	}
+
+	footer {
+		background: lighten($armedbg, 10%);
+	}
+	.x_panel {
+		background: lighten($armedbg, 10%);
+		border-color: darken($generic-border, 20%);
 	}
 }
