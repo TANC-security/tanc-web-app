@@ -10,24 +10,6 @@ class Kp_Main {
 		_set('page_title', 'Keypad');
 	}
 
-	public function fooAction($request, $response) {
-		$k = $request->cleanString('msg');
-		$response->addTo('key', trim($k));
-
-		$beanstalk = \_make('beanstalkclient');
-		$beanstalk->connect();
-		$beanstalk->useTube('hangouts');
-
-		$x = $beanstalk->put(
-		    23, // Give the job a priority of 23.
-		    0,  // Do not wait to put job into the ready queue.
-		    10, // Give the job 10 sec to run.
-		    json_encode(['text'=>$k])
-		);
-		var_dump($x);
-		exit();
-	}
-
 
 	public function mainAction($response) {
 //		$response->addTo('main', ['foo', 'bar']);
@@ -174,6 +156,7 @@ $('.alert-danger').remove();
 		}
 	}
 
+	/*
 	public function displayBeanstalkAction($response) {
 		$beanstalk = \_make('beanstalkclient');
 		$x = $beanstalk->connect();
@@ -200,12 +183,12 @@ $('.alert-danger').remove();
 			$response->addTo('items', print_r($object->msg, 1));
 		}
 	}
+	 */
 
 	public function sendAction($request, $response) {
 		$k = $request->cleanString('k');
 		$response->addTo('key', trim($k));
 		if (strlen(trim($k))) {
-//			$x = $this->sendKey($k);
 			$x = $this->sendKeyMqtt($k);
 			$response->addTo('items', $x);
 		}
@@ -223,6 +206,7 @@ $('.alert-danger').remove();
 		\Amp\Promise\wait($p);
 	}
 
+	/*
 	public function sendKey($key) {
 		$beanstalk = \_make('beanstalkclient');
 		$beanstalk->connect();
@@ -235,4 +219,5 @@ $('.alert-danger').remove();
 		    $key
 		);
 	}
+	 */
 }
