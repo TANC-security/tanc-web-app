@@ -62,7 +62,8 @@ class Services_Main {
 		return [ 
 			['name'=>'tanc-ws-display'],
 			['name'=>'tanc-queue-reader'],
-			['name'=>'tanc-serial-comm']
+			['name'=>'tanc-serial-comm'],
+			['name'=>'mosquitto']
 		];
 	}
 
