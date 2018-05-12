@@ -205,9 +205,22 @@ $('.alert-danger').remove();
 		$k = $request->cleanString('k');
 		$response->addTo('key', trim($k));
 		if (strlen(trim($k))) {
-			$x = $this->sendKey($k);
+//			$x = $this->sendKey($k);
+			$x = $this->sendKeyMqtt($k);
 			$response->addTo('items', $x);
 		}
+	}
+
+	public function sendKeyMqtt($key) {
+		$client = \_make('mqttclient');
+		$p = $client->connect();
+
+		$topicPrefix = _get('topic-prefix', 'security/');
+
+		$p = $client->publish(
+		    $key, $topicPrefix.'input', 0
+		);
+		\Amp\Promise\wait($p);
 	}
 
 	public function sendKey($key) {

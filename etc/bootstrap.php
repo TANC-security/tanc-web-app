@@ -23,14 +23,14 @@ foreach (array('APPLICATION_ENV', 'APP_ENV') as $_envkey) {
 		break;
 	}
 }
-foreach (array('BEANSTALK_ADDRESS') as $_envkey) {
+foreach (array('BEANSTALK_ADDRESS', 'MQTT_ADDRESS') as $_envkey) {
 	if (array_key_exists($_envkey, $_SERVER)) {
-		_set('BEANSTALK_ADDRESS', $_SERVER[$_envkey]);
-		break;
+		_set($_envkey, $_SERVER[$_envkey]);
+		continue;
 	}
 	if (getenv($_envkey) !==FALSE) {
-		_set('BEANSTALK_ADDRESS', getenv($_envkey));
-		break;
+		_set($_envkey, getenv($_envkey));
+		continue;
 	}
 }
 
@@ -131,4 +131,9 @@ _didef('beanstalkclient', function() {
 	list($host, $port) = explode(':', $addr);
 	include_once ('src/Beanstalk/Client.php');
 	return new \Beanstalk\Client(['host'=>$host, 'port'=>$port]);
+});
+
+_didef('mqttclient', function() {
+	$addr = _get('MQTT_ADDRESS', '127.0.0.1:1883');
+	return new \MarkKimsal\Mqtt\Client('tcp://'.$addr);
 });
