@@ -25,41 +25,13 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		$this->endpoint = $endpoint;
 	}
 
-	public function blastAndSave($payload) {
+	public function blast($payload) {
+
 		$this->endpoint->broadcast(
 			json_encode(
 				$payload
 			)
 		);
-	}
-
-	public function sendDisplayMessage($message, $clientId=NULL, $beeps=0, $armed=false) {
-		if ($clientId == NULL) {
-			$this->endpoint->broadcast(
-				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps, 'armed'=>$armed])
-			);
-		} else {
-			$this->endpoint->send(
-				json_encode(['type'=>'display', 'message'=>$message, 'beeps'=>$beeps, 'armed'=>$armed])
-				, $clientId
-			);
-		}
-	}
-
-	public function blast($msg, $beeps=0, $armed=false) {
-		if ($this->lastMsg == $msg) {
-			return;
-			//nothing new
-		}
-		$this->lastMsg = $msg;
-
-		/*
-		if (!count($this->clients)) {
-			return;
-		}
-		 */
-
-		$this->sendDisplayMessage($msg, NULL, $beeps, $armed);
 	}
 
 	public function validateSession($sessid) {
@@ -205,156 +177,31 @@ $server->start();
 
 Loop::run(function () use ($mqttAddress, $myWs) {
 
-	$client = new MarkKimsal\Mqtt\Client('tcp://'.$mqttAddress.'/?topics=security/display,security/event-frontend');
+	$client = new MarkKimsal\Mqtt\Client('tcp://'.$mqttAddress.'/?topics=security/display,security/event-frontend,security/event,security/debug');
 	$p = $client->connect();
 	$p->onResolve(function() { echo "*** connect resolved ***\n"; });
 
 	$client->on('message', function($packet) use($myWs) {
 		$topic  = $packet->getTopic();
 		$result = $packet->getMessage();
+		$payload = json_decode($result, TRUE);
+
+		//massage armed json keys
 		if ($topic == 'security/display') {
 
-			$status = json_decode($result, TRUE);
-
 			$armed = 'disarmed';
-			if (@$status['ARMED_AWAY'] == 'true') {
+			if (@$payload['ARMED_AWAY'] == 'true') {
 				$armed = 'away';
 			}
-			if (@$status['ARMED_STAY'] == 'true') {
+			if (@$payload['ARMED_STAY'] == 'true') {
 				$armed = 'stay';
 			}
-			try {
-				$myWs->blast(print_r($status['msg'], 1), @$status['beep'], $armed);
-				echo "D/WS: blast msg: ".$status['msg']." .\n";
-			} catch (\Error $t) {
-exit();
-				var_dump($t);
-			} catch (\Exception $t) {
-exit();
-				var_dump($t);
-			}
+
+			$payload['armed'] = $armed;
 		}
+		$myWs->blast($payload);
+
 	});
-	/*
-	Loop::repeat($msInterval=50,
-		function() use ($client, $myWs){
-
-		try {
-			$promise      = $client->reserve(0);
-		} catch (Exception $e) {
-			if ($e instanceOf Amp\Beanstalk\DeadlineSoonException) {
-				var_dump($e->getJob());
-			}
-		}
-
-		/*
-		$promise->onResolve( function($error, $result) use ($client, $myWs) {
-
-			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
-				return;
-			}
-
-			if ($error instanceOf Amp\Beanstalk\DeadlineSoonException) {
-				var_dump( get_class($error) );
-				return;
-			}
-
-			if (!$result) {
-				echo "D/Job: no result\n";
-				return;
-			}
-
-			if ($result) {
-				echo "I/Job: RESERVED JOB: ".$result[0]."\n";
-			}
-
-			try {
-				$id = $result[0];
-
-				$status = json_decode($result[1], TRUE);
-
-				$armed = 'disarmed';
-				if (@$status['ARMED_AWAY'] == 'true') {
-					$armed = 'away';
-				}
-				if (@$status['ARMED_STAY'] == 'true') {
-					$armed = 'stay';
-				}
-				try {
-					$myWs->blast(print_r($status['msg'], 1), @$status['beep'], $armed);
-					echo "D/WS: blast msg: ".$status['msg']." .\n";
-				} catch (\Error $t) {
-					var_dump($t);
-				} catch (\Exception $t) {
-					var_dump($t);
-				}
-
-				//do work here
-//				var_dump($result);
-				$k  = $client->delete($id);
-//				$k  = $client->release($id);
-				//echo "I/Job: DELETING JOB: " . $id."\n";
-
-				$k->onResolve( function($err, $res) use ($client, $id) {
-					echo "I/Job: DELETED JOB: " . $id."\n";
-				});
-			} catch (Exception $e) {
-				var_dump($e->getMessage());
-			}
-		});
-		 */
-
-		/*
-		$promiseEvent->onResolve( function($error, $result) use ($clientEvent, $myWs) {
-
-			if ($error instanceOf Amp\Beanstalk\TimedOutException) {
-				return;
-			}
-
-			if ($error instanceOf Amp\Beanstalk\DeadlineSoonException) {
-				var_dump( get_class($error) );
-				return;
-			}
-
-			if (!$result) {
-				echo "D/Job: no result\n";
-				return;
-			}
-
-			if ($result) {
-				echo "I/Job: RESERVED JOB: ".$result[0]."\n";
-			}
-
-			try {
-				$id = $result[0];
-
-				$payload = json_decode($result[1], TRUE);
-				echo "D/E: got job\n";
-				var_dump($payload);
-		
-				try {
-					$myWs->blastAndSave($payload);
-				} catch (\Error $t) {
-					var_dump($t);
-				} catch (\Exception $t) {
-					var_dump($t);
-				}
-
-				//do work here
-//				var_dump($result);
-				$k  = $clientEvent->delete($id);
-//				$k  = $client->release($id);
-				//echo "I/Job: DELETING JOB: " . $id."\n";
-
-				$k->onResolve( function($err, $res) use ($clientEvent, $id) {
-					echo "I/Job: DELETED JOB: " . $id."\n";
-				});
-			} catch (Exception $e) {
-				var_dump($e->getMessage());
-			}
-		});
-	});
-	 */
 });
 
 
