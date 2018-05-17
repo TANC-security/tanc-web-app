@@ -5,6 +5,7 @@ class Panel_Main {
 	public $logService;
 
 	public function eventAction($request, $response) {
+		echo "event action\n";
 		$payload = $request->vars['payload'];
 		echo "event action\n";
 
@@ -65,55 +66,13 @@ class Panel_Main {
 	 * as a messge queue
 	 */
 	public function sendEvent($payload) {
-		$beanstalk = \_make('beanstalkclient');
-		$beanstalk->connect();
-		$beanstalk->useTube('event-frontend');
+		$client = \_make('mqttclient');
+		$client->connect();
 
-		return $beanstalk->put(
-		    23, // Give the job a priority of 23.
-		    0,  // Do not wait to put job into the ready queue.
-		    0,  // Give the job 0 sec to run.
-		    json_encode($payload)
+		$topic = _get('topic-prefix', 'security/').'event-frontend';
+		$promise = $client->publish(
+		    json_encode($payload), $topic, 0
 		);
-		
-
-		/*
-		echo $status['armed']."\n";
-		echo $status['faulted']."\n";
-		if ($status['armed'] == 'yes' && $status['faulted'] == 'no') {
-
-			$message = $this->_getMessageArmed();
-		}
-		if ($status['armed'] == 'no' && $status['faulted'] == 'no') {
-
-			$message = $this->_getMessageDisarmed();
-		}
-
-
-		$notifyList = \_makeNew('settings');
-		$notifyList->set('key', 'notifylist1');
-		$notifyList->loadExisting();
-		$notifyListVals = json_decode($notifyList->get('value'), TRUE);
-		$to = [];
-		foreach($notifyListVals as $_key => $_val) {
-			if ($_val)
-			$to[] = $_val;
-		}
-
-
-//			echo $message."\n";
-			echo "sending email to ...\n";
-			echo json_encode($to)."\n";
-
-			$x = $this->sendTransactionEmail(
-				$to,
-				$message,
-				_get('smtp.username', NULL),
-				NULL,
-				$message
-			);
-			echo $x."\n";
-			return;
-		 */
+		\Amp\Promise\wait($promise);
 	}
 }

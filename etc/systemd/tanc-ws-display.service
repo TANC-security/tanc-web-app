@@ -7,7 +7,7 @@ Type=idle
 User=pi
 Group=users
 WorkingDirectory=/opt/tanc/www
-ExecStart=/usr/bin/php /opt/tanc/www/bin/ws-queue.php
+ExecStart=/usr/bin/php /opt/tanc/www/bin/mqtt-ws-bridge.php
 Restart=on-failure
 
 [Install]

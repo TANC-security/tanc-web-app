@@ -5,8 +5,8 @@ class Status_Main {
 	public $logService;
 
 	public function sendAction($request, $response) {
-		$status = $request->vars['status'];
 		echo "send action\n";
+		$status = $request->vars['status'];
 		echo $status['armed']."\n";
 		echo $status['faulted']."\n";
 		if ($status['armed'] == 'yes' && $status['faulted'] == 'no') {

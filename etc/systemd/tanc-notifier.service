@@ -1,5 +1,5 @@
 [Unit]
-Description=TANC Status Queue Reader
+Description=TANC Alarm Notifier
 After=multi-user.target
 
 [Service]
@@ -7,7 +7,7 @@ Type=idle
 User=pi
 Group=users
 WorkingDirectory=/opt/tanc/www/
-ExecStart=/usr/bin/php /opt/tanc/www/bin/queue-reader.php
+ExecStart=/usr/bin/php /opt/tanc/www/bin/mqtt-notify.php
 Restart=on-failure
 
 [Install]

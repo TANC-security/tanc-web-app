@@ -1,5 +1,10 @@
 var eventList = [];
 var beep;
+var badconn = 0;
+
+var socketserver = new EventEmitter2({
+});
+
 $(document).ready(function() {
 
 	var burl = $('body').data('base-url');
@@ -43,10 +48,9 @@ $(document).ready(function() {
 
 
 	try {
-//		pollDisplay();
 		wsDisplay();
 	} catch (e) {
-		setTimeout(onBadWs,3000);
+		onBadWs();
 	}
 });
 
@@ -54,7 +58,7 @@ function showDisplayError() {
 	if ($('.alert-danger').length){
 		return;
 	}
-	$('#content-main').prepend('<div class=\"alert alert-danger\">Communication with the security panel has been interrupted.</div>');
+	$('#content-main').prepend('<div class=\"alert alert-danger comm-error\">Communication with the security panel has been interrupted.</div>');
 }
 
 function showEvent(packet) {
@@ -99,33 +103,6 @@ function repaintEvents() {
 	}
 }
 
-function pollDisplay() {
-try {
-	$.get(burl+'kp/main/displayBeanstalk', function(data) {
-		if (!data.items) { showDisplayError(); setTimeout(pollDisplay, 1000); return;}
-		var displayMsg   = data.items[0] || '';
-		var line1 = line2 = '';
-		for (i=0; i < 16; i++) {
-			line1 += displayMsg.charAt(i);
-		}
-		for (i=16; i < 32; i++) {
-			line2 += displayMsg.charAt(i);
-		}
-		line1 = line1.replace(' ', '&nbsp;');
-		line2 = line2.replace(' ', '&nbsp;');
-
-		$('.kp-view').html(line1+'<br/>'+line2);
-		setTimeout(pollDisplay,1000);
-		removeDisplayError();
-	}).fail(function(xhr, type, status) {
-		showDisplayError();
-		setTimeout(pollDisplay,10000);
-	});
-} catch (e) {
-		setTimeout(pollDisplay,3000);
-}
-}
-
 function wsDisplay() {
 	var burl = $('body').data('base-url');
 	// Then some JavaScript in the browser:
@@ -137,35 +114,31 @@ function wsDisplay() {
 	var conn = new WebSocket(scheme+burlParts[1]+'display/');
 
 	conn.onmessage = function(e) {
-		//console.log(e.data);
 		var packet = JSON.parse(e.data) || '';
-		if (packet.type == 'event') {
-			showEvent(packet);
-//			showEvent('Got ' + packet.qualifier + ' event code: ' +packet.code);
-			return;
-		}
-		if (packet.type == 'display') {
-			showDisplayMessage(packet);
-			return;
-		}
-
+		socketserver.emit(packet.type, packet);
 	};
+
 	conn.onopen = function(e) {
+		removeDisplayError();
+		badconn = 0;
 	};
 
 	conn.onclose = function(e) {
-		setTimeout(onBadWs,1000);
+		onBadWs();
 	};
 }
 
 function onBadWs() {
 	showDisplayError();
-	wsDisplay();
+	badconn++;
+	var tmo =  3000 * badconn;
+	if (tmo > 60000) to = 60000;
+	setTimeout(wsDisplay, tmo);
 }
 
 
 function showDisplayMessage(packet) {
-	var displayMsg   = packet.message || e.data || '';
+	var displayMsg   = packet.msg || '';
 	var line1 = line2 = '';
 	for (i=0; i < 16; i++) {
 		line1 += displayMsg.charAt(i);
@@ -177,7 +150,6 @@ function showDisplayMessage(packet) {
 	line2 = line2.replace(' ', '&nbsp;');
 
 	$('.kp-view').html(line1+'<br/>'+line2);
-	removeDisplayError();
 
 	if (packet['beeps']) {
 		count = parseInt(packet['beeps']);
@@ -186,10 +158,15 @@ function showDisplayMessage(packet) {
 }
 
 function removeDisplayError() {
-	/*
-	if ($('.alert-danger').length){
-		$('.alert-danger').remove();
+	if ($('.alert-danger.comm-error').length){
+		$('.alert-danger.comm-error').remove();
 	}
-	*/
 }
 
+
+socketserver.on('event', function(packet) {
+	showEvent(packet);
+});
+socketserver.on('display', function(packet) {
+	showDisplayMessage(packet);
+});
