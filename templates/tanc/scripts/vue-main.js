@@ -1,59 +1,4 @@
 
-var server = new EventEmitter2({
-});
-
-server.on('display', function(packet) {
-	app.state = packet.armed;
-});
-
-server.on('debug', function(packet) {
-	console.log(packet);
-});
-
-function wsDisplay2(app) {
-	var burl = $('body').data('base-url');
-	// Then some JavaScript in the browser:
-	var burlParts = burl.split('://');
-	var scheme = 'ws://';
-	if (burlParts[0] == 'https') {
-		scheme = 'wss://';
-	}
-	var conn = new WebSocket(scheme+burlParts[1]+'display/');
-	var zapp = app;
-
-	conn.onmessage = function(e) {
-		var packet = JSON.parse(e.data) || '';
-		server.emit(packet.type, packet);
-		/*
-		if (packet.type == 'event') {
-			server.emit('event', packet);
-			//showEvent(packet);
-			return;
-		}
-
-		if (packet.type == 'display') {
-			server.emit('display', packet);
-			/*
-				zapp.state = packet.armed;
-				*/
-				/*
-			if (zapp) {
-				zapp.state = packet.armed;
-			}
-			*/
-			//showDisplayMessage(packet);
-		//	return;
-	//	}
-	};
-
-	conn.onopen = function(e) {
-	};
-
-	conn.onclose = function(e) {
-		setTimeout(onBadWs,1000);
-	};
-}
-
 var app = new Vue({
 	el: '#main_main',
 	data: {
@@ -163,4 +108,11 @@ var app = new Vue({
 	}
 });
 
-wsDisplay2(app);
+socketserver.on('display', function(packet) {
+	app.state = packet.armed;
+});
+
+socketserver.on('debug', function(packet) {
+	console.log(packet);
+});
+
