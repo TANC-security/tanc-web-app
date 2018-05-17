@@ -26,6 +26,14 @@ cp  index.php $PACKAGE_ROOT/opt/tanc/www/
 cp  composer.json $PACKAGE_ROOT/opt/tanc/www/
 cp  composer.lock $PACKAGE_ROOT/opt/tanc/www/
 
+#clean unneeded files
+find $PACKAGE_ROOT/opt/tanc/www/ -name 'README*' -type f -exec rm {} +
+find $PACKAGE_ROOT/opt/tanc/www/ -name '*xml.dist' -type f -exec rm {} +
+find $PACKAGE_ROOT/opt/tanc/www/ -name '.git' -type d -exec rm -Rf {} \;
+find $PACKAGE_ROOT/opt/tanc/www/ -name 'tests' -type d -exec rm -Rf {} +
+find $PACKAGE_ROOT/opt/tanc/www/ -name 'examples' -type d -exec rm -Rf {} +
+find $PACKAGE_ROOT/opt/tanc/www/ -name 'doc' -type d -exec rm -Rf {} +
+
 mkdir $PACKAGE_ROOT/opt/tanc/www/var/
 mkdir -p $PACKAGE_ROOT/opt/tanc/www/var/{db,cache,sess,templates,demoCA}
 
