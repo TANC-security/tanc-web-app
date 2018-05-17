@@ -147,12 +147,12 @@
           </div>
           <!-- /top tiles -->
           <div class="row" id="content-sparkmsg">
-          <div class="col-sm-12">
+          <div class="col-xs-12 col-12">
           <?php echo Metrofw_Template::parseSection('sparkmsg'); ?>
           </div>
           </div>
           <div class="row" id="content-main">
-          <div class="col-sm-12">
+          <div class="col-xs-12 col-12">
 			<?php echo Metrofw_Template::parseSection('main'); ?>
           </div>
           </div>

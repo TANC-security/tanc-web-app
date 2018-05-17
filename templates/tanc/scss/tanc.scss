@@ -65,12 +65,12 @@ $kpcolor: #73879C;
 .kp-view {
   width:100%;
   background:#FFE;
-  font-size:220%;
+  font-size:175%;
   font-family: "LCD", monospace;
   font-variant: small-caps;
   font-weight: 700;
   color:$kpcolor;
-  padding: 0.2em 0.75em;
+  padding: 0.2em 0.2em;
 }
 .kp-container span.subtitle {
   font-size:50%;
@@ -87,6 +87,7 @@ $kpcolor: #73879C;
 @media(min-width:768px) {
 	.kp-view {
 		font-size:300%;
+		padding: 0.2em 0.75em;
 	}
 	.kp-container > button{
 		font-size:200%;
