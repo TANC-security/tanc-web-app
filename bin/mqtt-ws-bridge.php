@@ -19,7 +19,7 @@ use Amp\Loop;
 class MyAwesomeWebsocket implements Aerys\Websocket {
     private $endpoint;
 	public  $clients;
-	public  $lastMsg;
+	public  $lastByType = [];
 
 	public function onStart(Aerys\Websocket\Endpoint $endpoint) {
 		$this->endpoint = $endpoint;
@@ -27,6 +27,9 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 
 	public function blast($payload) {
 
+		if (array_key_exists('type', $payload)) {
+			$lastByType [ $payload['type'] ] = $payload;
+		}
 		$this->endpoint->broadcast(
 			json_encode(
 				$payload
@@ -62,12 +65,11 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 		// Do eventual session verification and manipulate Response if needed to abort
 echo "D/WS: got new handshake\n";
 		$x = $request->getCookie('s');
-var_dump($x);
 		if (!$this->validateSession($x) ) {
 			$response->setStatus(401);
 			return FALSE;
 		}
-echo "D/WS: got new session\n";
+echo "D/WS: got new session: $x\n";
 		return $x;
 	}
 
@@ -75,10 +77,16 @@ echo "D/WS: got new session\n";
 		if ($handshakeData == FALSE) {
 			return;
 		}
+echo "D/WS: got new open\n";
 		$this->clients[] = $clientId;
-		if ($this->lastMsg != '') {
-			$this->sendDisplayMessage($this->lastMsg, $clientId);
-//			$this->endpoint->send($this->lastMsg, $clientId);
+		foreach ($this->lastByType as $type => $payload) {
+echo "D/WS: got new open\n";
+			$this->endpoint->send(
+				json_encode(
+					$payload
+				),
+				$clientId
+			);
 		}
 	}
 
@@ -89,7 +97,11 @@ echo "D/WS: got new session\n";
 	}
 
 	public function onClose(int $clientId, int $code, string $reason) {
-		//TODO: remove from clients[]
+		foreach ($this->clients as $_idx => $_clientId) {
+			if ($clientId == $_clientId) {
+				unset($this->clients[$_idx]);
+			}
+		}
 		// client disconnected, we may not send anything to him anymore
 	}
 
