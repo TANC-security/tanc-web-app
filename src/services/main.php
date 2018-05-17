@@ -61,7 +61,7 @@ class Services_Main {
 	public function getDefinedServices() {
 		return [ 
 			['name'=>'tanc-ws-display'],
-			['name'=>'tanc-queue-reader'],
+			['name'=>'tanc-notifier'],
 			['name'=>'tanc-serial-comm'],
 			['name'=>'mosquitto']
 		];
