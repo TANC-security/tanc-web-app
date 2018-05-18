@@ -5,7 +5,7 @@
 
 
 	<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 animated flipInY text-center">
-		<div class="card x_panel statuspanel" style="margin:auto;clear:both;">
+		<div class="card x_panel statuspanel" style="clear:both;">
 			<div class="card-block card-body x_content">
 
 				<div class="row-fluid">
@@ -13,7 +13,7 @@
 						<p v-html="statusMessage">Determining status...</p>
 					</div>
 					<div class="col-xs-12">
-						<button v-on:click="performAction('disarm');" class="btn btn-lg btn-primary statuspanel__btn" :disabled="isDisarmed" v-bind:class="{'btn-default':isArmed}" v-bind:class="{disabled:isDisarmed}">Disarm</button>
+						<button v-on:click="performAction('disarm');" class="btn btn-lg statuspanel__btn" :disabled="isDisarmed" v-bind:class="{'btn-primary':isArmed}" v-bind:class="{disabled:isDisarmed}">Disarm</button>
 					</div>
 				</div>
 			</div>
