@@ -1,6 +1,7 @@
 var eventList = [];
 var beep;
 var badconn = 0;
+var global_windowunload = false;
 
 var socketserver = new EventEmitter2({
 });
@@ -51,6 +52,10 @@ $(document).ready(function() {
 		wsDisplay();
 	} catch (e) {
 		onBadWs();
+	}
+
+	window.onbeforeunload = function() {
+		global_windowunload = true;
 	}
 });
 
@@ -124,7 +129,12 @@ function wsDisplay() {
 	};
 
 	conn.onclose = function(e) {
-		onBadWs();
+		//if we are not page unloading, show error message
+		//and try to reconnect
+		//this happens all the time on mobile firefox
+		if (global_windowunload == false) {
+			onBadWs();
+		}
 	};
 }
 
