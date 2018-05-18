@@ -104,10 +104,8 @@
 
                 <li role="presentation" class="dropdown">
                   <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-					<!--
-                    <span class="badge bg-green">6</span>
-					-->
+                    <i class="fa fa-comments icon-2x"></i>
+                    <span class="event-badge badge bg-green"></span>
                   </a>
                   <ul id="topnav__msglist" class="dropdown-menu list-unstyled msg_list topnav__msglist" role="menu">
 <!--
