@@ -28,8 +28,9 @@ class MyAwesomeWebsocket implements Aerys\Websocket {
 	public function blast($payload) {
 
 		if (array_key_exists('type', $payload)) {
-			$lastByType [ $payload['type'] ] = $payload;
+			$this->lastByType [ $payload['type'] ] = $payload;
 		}
+		echo "D/WS blast:\n";
 		$this->endpoint->broadcast(
 			json_encode(
 				$payload
@@ -80,7 +81,6 @@ echo "D/WS: got new session: $x\n";
 echo "D/WS: got new open\n";
 		$this->clients[] = $clientId;
 		foreach ($this->lastByType as $type => $payload) {
-echo "D/WS: got new open\n";
 			$this->endpoint->send(
 				json_encode(
 					$payload
