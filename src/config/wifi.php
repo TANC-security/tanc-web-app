@@ -1,5 +1,5 @@
 <?php
-class Config_Main {
+class Config_Wifi {
 
 	public $iface = 'wlan0';
 
