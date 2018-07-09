@@ -196,14 +196,15 @@ $('.alert-danger').remove();
 
 	public function sendKeyMqtt($key) {
 		$client = \_make('mqttclient');
-		$p = $client->connect();
+		$client->connect();
 
 		$topicPrefix = _get('topic-prefix', 'security/');
 
 		$p = $client->publish(
-		    $key, $topicPrefix.'input', 0
+			$key, $topicPrefix.'input', 0
 		);
 		\Amp\Promise\wait($p);
+
 	}
 
 	/*
