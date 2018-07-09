@@ -5,7 +5,7 @@ $(document).ready(function() {
 		console.log(data);
 		var template = Handlebars.compile($('#page-template').html());
 		var html    = template(data);
-		$('.col-sm-12').last().append(html);
+		$('#content-main').last().append(html);
 		$('#wait').remove();
 	});
 

@@ -149,8 +149,8 @@
           <?php echo Metrofw_Template::parseSection('sparkmsg'); ?>
           </div>
           </div>
-          <div class="row" id="content-main">
-          <div class="col-xs-12 col-12">
+          <div class="row">
+          <div class="col-xs-12 col-12"  id="content-main">
 			<?php echo Metrofw_Template::parseSection('main'); ?>
           </div>
           </div>
