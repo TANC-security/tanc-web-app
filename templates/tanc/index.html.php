@@ -46,12 +46,17 @@
                   </li>
                   <li><a href="<?php echo m_appurl('rules');?>"><i class="fa fa-envelope"></i> Notifications </a>
                   </li>
-                  <li><a href="<?php echo m_appurl('config');?>"><i class="fa fa-wifi"></i> Wifi </a>
+				  <li><a href="<?php echo m_appurl('config');?>"><i class="fa fa-gears"></i> Settings <span class="fa fa-chevron-down"></span></a>
+<!--
+                  <ul class="nav child_menu" style="display: block;">
+                      <li><a href="<?php echo m_appurl('config/wifi');?>"><i class="fa fa-wifi"></i> Wi-Fi </a></li>
+                      <li><a href="<?php echo m_appurl('config/update');?>"><i class="fa fa-gears"></i> Update </a></li>
+                      <li><a href="<?php echo m_appurl('services');?>"><i class="fa fa-puzzle-piece"></i> Services </a></li>
+                  </ul>
                   </li>
                   <li><a href="<?php echo m_appurl('update');?>"><i class="fa fa-gears"></i> Update </a>
                   </li>
-                  <li><a href="<?php echo m_appurl('services');?>"><i class="fa fa-puzzle-piece"></i> Services </a>
-                  </li>
+-->
                 </ul>
               </div>
 
